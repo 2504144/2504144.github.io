@@ -5,6 +5,9 @@
 // Extra for Experts:
 // - I have uncorperated mouse weheel into my project by using it to change the speed of the ball
 
+//buttons
+let buttonWidth = 400;
+let buttonHeight = 70;
 //ball
 let x;
 let y;
@@ -18,6 +21,7 @@ let firstX;
 let firstY;
 let secondX;
 let secondY;
+let state = 'main';
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -31,27 +35,62 @@ function setup() {
   firstY = height/2 - rectHeight/2;
 
   //second player
-  secondX = width - (width/15) - rectWidth;
+  secondX = width - width/15 - rectWidth;
   secondY = height/2 - rectHeight/2;
 }
 
 function draw() {
-  background('black');
-  displayBall();
-  moveBall();
-  bounce();
-  firstPlayer();
-  secondPlayer();
+  if (state === 'main') {
+    mainPage();
+  }
+  else if (state === 'game') {
+    background('black');
+    displayBall();
+    moveBall();
+    bounce();
+    firstPlayer();
+    secondPlayer();
+  }
+}
+
+function mainPage(){
+  background('lime');
+
+  //Banner
+  fill('black');
+  rect(width/2 - buttonWidth/2 * 1.5, height/10, buttonWidth * 1.5, buttonHeight);
+
+  //Play Button
+  rect(width/2 - buttonWidth/4, height/3, buttonWidth/2, buttonHeight);
+
+  //Controls Button
+  rect(width/2 - buttonWidth/(1.75*2), height/2, buttonWidth/1.75, buttonHeight);
+
+  //Banner Text
+  fill('lime');
+  textSize(50);
+  textStyle('bold');
+  text("Khoi's Version of Pong", width/2 - buttonWidth/2 * 1.5 + buttonWidth/2/2 - 70, height/10 + buttonHeight/2 + 17);
+
+  // Play Text
+  textSize(50);
+  textStyle('bold');
+  text('Play', width/2 - buttonWidth/4 + buttonWidth/2/2 - 50, height/3+buttonHeight/2 + 17);
+
+  //Control Text
+  textSize(50);
+  textStyle('bold');
+  text('Controls', width/2 - buttonWidth/4 + buttonWidth/2/2 - 100, height/2+buttonHeight/2 + 17);
 }
 
 function moveBall() {
-  //ball movement
+  //Ball Movement
   x += dx;  
   y += dy;
 }
 
 function bounce() {
-  //bounce mechanics
+  //Bounce Mechanics
   if (x > width - radius || x < 0 + radius) {
     dx *= -1;
   }
@@ -62,23 +101,23 @@ function bounce() {
 }
 
 function displayBall() {
-  //ball
+  //Ball
   fill('lime');
   circle(x, y, radius*2);
   noStroke();
 }
 
 function firstPlayer() {
-  //player one
+  //Player One
   rect(firstX, firstY, rectWidth, rectHeight);
 }
 
 function secondPlayer() {
-  //player two
+  //Player Two
   rect(secondX,secondY, rectWidth, rectHeight);
 }
 
-//extra for experts
+//Extra for Experts
 function mouseWheel(){
   if (dx > 0 && dx < 30 && dy > 0 && dy < 30){
     dx += 4;
