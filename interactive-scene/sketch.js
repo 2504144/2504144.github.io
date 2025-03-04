@@ -21,7 +21,8 @@ let firstX;
 let firstY;
 let secondX;
 let secondY;
-let state = 'main';
+let state = 'game';
+let movementSpeed = 5;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -43,6 +44,9 @@ function draw() {
   if (state === 'main') {
     mainPage();
   }
+  else if (state === 'controls'){
+    controlPage();
+  }
   else if (state === 'game') {
     background('black');
     displayBall();
@@ -53,6 +57,7 @@ function draw() {
   }
 }
 
+//Main Page
 function mainPage(){
   background('lime');
 
@@ -83,6 +88,34 @@ function mainPage(){
   text('Controls', width/2 - buttonWidth/4 + buttonWidth/2/2 - 100, height/2+buttonHeight/2 + 17);
 }
 
+//Control Page
+function controlPage(){
+  background('black')
+
+  //Banner
+  fill('lime');
+  rect(width/2 - buttonWidth/2, height/10, buttonWidth, buttonHeight);
+
+  fill('black');
+  textSize(50);
+  textStyle('bold');
+  text("Game Controls", width/2 - buttonWidth/2 + buttonWidth/2/2 - 79, height/10 + buttonHeight/2 + 17);
+}
+
+//If Play Button Clicked
+function mouseClicked(){
+  if (mouseX > width/2 - buttonWidth/4 && mouseY > height/3){
+    state = 'game';
+  }
+}
+
+//If Control Button Clicked
+function mouseClicked(){
+  if (mouseX > width/2 - buttonWidth/(1.75*2) && mouseY > height/2){
+    state = 'controls';
+  }
+}
+
 function moveBall() {
   //Ball Movement
   x += dx;  
@@ -92,7 +125,7 @@ function moveBall() {
 function bounce() {
   //Bounce Mechanics
   if (x > width - radius || x < 0 + radius) {
-    dx *= -1;
+    state = 'main';
   }
   
   if (y > height - radius || y < 0 + radius) {
@@ -110,25 +143,47 @@ function displayBall() {
 function firstPlayer() {
   //Player One
   rect(firstX, firstY, rectWidth, rectHeight);
+  wSKeys();
 }
 
 function secondPlayer() {
   //Player Two
   rect(secondX,secondY, rectWidth, rectHeight);
+  upDownArrows();
 }
 
 //Extra for Experts
 function mouseWheel(){
   if (dx > 0 && dx < 30 && dy > 0 && dy < 30){
-    dx += 4;
-    dy += 4;
+    dx += 10;
+    dy += 10;
   }
 }
-// function upDownArrows() {
-//   if (keyIsDown(UP_ARROW)) {
-//     y -= dy;
-//   }
-//   if (keyIsDown(DOWN_ARROW)) {
-//     y += dy;
-//   }
-// }
+
+//Up Down Arrows
+function upDownArrows() {
+
+  //Up Arrow
+  if (keyIsDown(UP_ARROW) && firstY > 0) {
+    firstY -= dy * movementSpeed;
+  }
+  
+  //Down Arrow
+  else if (keyIsDown(DOWN_ARROW) && firstY < height - buttonHeight) {
+    firstY += dy * movementSpeed;
+  }
+}
+
+//W and S Keys
+function wSKeys(){
+
+  //W Key
+  if (keyIsDown(87)) {
+    secondY -= dy * movementSpeed;
+  }
+
+  //S Key
+  if (keyIsDown(83)) {
+    secondY += dy * movementSpeed;
+  }
+}
