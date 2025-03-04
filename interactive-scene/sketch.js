@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - I have uncorperated mouse weheel into my project by using it to change the speed of the ball
 
-//buttons
+//button dimensions
 let buttonWidth = 400;
 let buttonHeight = 70;
 //ball
@@ -21,22 +21,23 @@ let firstX;
 let firstY;
 let secondX;
 let secondY;
-let state = 'game';
+let state = 'main';
 let movementSpeed = 5;
 
 function setup() {
+  //Screen
   createCanvas(windowWidth, windowHeight);
   x = width/2;
   y = height/2;
-  dx = random(-5, 5);
-  dy = random(-5, 5);
+  dx = random(0, 5);
+  dy = random(0, 5);
 
-  //first player
-  firstX = width/15;
+  //First player
+  firstX = width - width/15 - rectWidth;
   firstY = height/2 - rectHeight/2;
 
-  //second player
-  secondX = width - width/15 - rectWidth;
+  //Second Player
+  secondX = width/15;
   secondY = height/2 - rectHeight/2;
 }
 
@@ -51,9 +52,9 @@ function draw() {
     background('black');
     displayBall();
     moveBall();
-    bounce();
     firstPlayer();
     secondPlayer();
+    bounce();
   }
 }
 
@@ -63,7 +64,7 @@ function mainPage(){
 
   //Banner
   fill('black');
-  rect(width/2 - buttonWidth/2 * 1.5, height/10, buttonWidth * 1.5, buttonHeight);
+  rect(width/2 - buttonWidth/2 * 2, height/10, buttonWidth * 2, buttonHeight);
 
   //Play Button
   rect(width/2 - buttonWidth/4, height/3, buttonWidth/2, buttonHeight);
@@ -75,7 +76,7 @@ function mainPage(){
   fill('lime');
   textSize(50);
   textStyle('bold');
-  text("Khoi's Version of Pong", width/2 - buttonWidth/2 * 1.5 + buttonWidth/2/2 - 70, height/10 + buttonHeight/2 + 17);
+  text("Khoi's Version of Pong (Out of 1)", width/2 - buttonWidth/2 * 1.5 + buttonWidth/2/2 - 192, height/10 + buttonHeight/2 + 17);
 
   // Play Text
   textSize(50);
@@ -100,30 +101,31 @@ function controlPage(){
   textSize(50);
   textStyle('bold');
   text("Game Controls", width/2 - buttonWidth/2 + buttonWidth/2/2 - 79, height/10 + buttonHeight/2 + 17);
+
+  //Text Box
+  fill('lime');
+  rect(width/2 - (width - 600)/2, height/2 - height/4, width - 600, height/1.5);
+
 }
 
-//If Play Button Clicked
+//If Buttons Clicked
 function mouseClicked(){
   if (mouseX > width/2 - buttonWidth/4 && mouseY > height/3){
     state = 'game';
-  }
-}
-
-//If Control Button Clicked
-function mouseClicked(){
   if (mouseX > width/2 - buttonWidth/(1.75*2) && mouseY > height/2){
     state = 'controls';
   }
+  }
 }
 
+//Ball Movement
 function moveBall() {
-  //Ball Movement
   x += dx;  
   y += dy;
 }
 
+//Bounce Mechanics
 function bounce() {
-  //Bounce Mechanics
   if (x > width - radius || x < 0 + radius) {
     state = 'main';
   }
@@ -131,23 +133,33 @@ function bounce() {
   if (y > height - radius || y < 0 + radius) {
     dy *= -1;
   }
+
+  //First Player
+  if (x > firstX - radius && y > firstY && y < firstY + rectHeight) {
+    dx *= -1;
+  }
+
+  //Second Player
+  if (x < secondX + radius + rectWidth && y > secondY && y < secondY + rectHeight) {
+    dx *= -1;
+  }
 }
 
+//Ball
 function displayBall() {
-  //Ball
   fill('lime');
   circle(x, y, radius*2);
   noStroke();
 }
 
+//PLayer One
 function firstPlayer() {
-  //Player One
   rect(firstX, firstY, rectWidth, rectHeight);
   wSKeys();
 }
 
+//Player Two
 function secondPlayer() {
-  //Player Two
   rect(secondX,secondY, rectWidth, rectHeight);
   upDownArrows();
 }
@@ -155,22 +167,8 @@ function secondPlayer() {
 //Extra for Experts
 function mouseWheel(){
   if (dx > 0 && dx < 30 && dy > 0 && dy < 30){
-    dx += 10;
-    dy += 10;
-  }
-}
-
-//Up Down Arrows
-function upDownArrows() {
-
-  //Up Arrow
-  if (keyIsDown(UP_ARROW) && firstY > 0) {
-    firstY -= dy * movementSpeed;
-  }
-  
-  //Down Arrow
-  else if (keyIsDown(DOWN_ARROW) && firstY < height - buttonHeight) {
-    firstY += dy * movementSpeed;
+    dx += 5;
+    dy += 5;
   }
 }
 
@@ -178,12 +176,26 @@ function upDownArrows() {
 function wSKeys(){
 
   //W Key
-  if (keyIsDown(87)) {
-    secondY -= dy * movementSpeed;
+  if (keyIsDown(87) && firstY > 0) {
+    secondY -= movementSpeed;
   }
 
   //S Key
-  if (keyIsDown(83)) {
-    secondY += dy * movementSpeed;
+  if (keyIsDown(83) && firstY < height - buttonHeight) {
+    secondY += movementSpeed;
+  }
+}
+
+//Up Down Arrows
+function upDownArrows() {
+
+  //Up Arrow
+  if (keyIsDown(UP_ARROW) && secondY > 0) {
+    firstY -= movementSpeed;
+  }
+  
+  //Down Arrow
+  if (keyIsDown(DOWN_ARROW) && secondY < height - buttonHeight) {
+    firstY += movementSpeed;
   }
 }
