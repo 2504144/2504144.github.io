@@ -2,7 +2,7 @@
 // Khoi Tran
 // Feb 26th, 2025
 //
-// Extra for Experts:
+// Extra for Experts: (It's at the bottom of all code)
 // - I have uncorperated mouse weheel into my project by using it to change the speed of the ball(it may take a bit to change speed but it changes very quick)
 
 //button dimensions
@@ -22,7 +22,7 @@ let firstY;
 let secondX;
 let secondY;
 let state = 'main';
-let movementSpeed = 5;
+let movementSpeed = 7;
 
 function setup() {
   //Screen
@@ -49,18 +49,21 @@ function draw() {
     controlPage();
   }
   else if (state === 'game') {
-    background('black');
-    displayBall();
-    moveBall();
-    firstPlayer();
-    secondPlayer();
-    bounce();
+    game();
   }
   else if (state === 'lose'){
     loser();
   }
 }
 
+function game(){
+  background('black');
+  displayBall();
+  moveBall();
+  firstPlayer();
+  secondPlayer();
+  bounce();
+}
 //Main Page
 function mainPage(){
   background('lime');
@@ -108,13 +111,13 @@ function controlPage(){
 
   //Text Box
   fill('lime');
-  rect(width/2 - (width - 600)/2, height/2 - height/4, width - 600, height/3.25);
+  rect(width/2 - (width - 600)/2, height/2 - height/4, width - 600, height/2.75);
 
   //Text
   fill('black');
   textSize(30);
   textStyle('bold');
-  text("Player 1: W Key and S Key                                                             Player 2: Up Arrow and Down Arrow                               Scroll your mouse for a suprise!!                           As you saw, this game of pong is out of 1 so tread carefully.",width/2 - (width - 650)/2, height/2 - height/4.5, width - 650, height/1.5);
+  text("Player 1: W Key and S Key                                                             Player 2: Up Arrow and Down Arrow                               Scroll your mouse for a suprise!!(Might have to scroll a few times)                                                                     As you saw, this game of pong is out of 1 so tread carefully.",width/2 - (width - 650)/2, height/2 - height/4.5, width - 650, height/1.5);
   
   //Play Button on Control Screen
   fill('lime');
@@ -191,14 +194,6 @@ function secondPlayer() {
   upDownArrows();
 }
 
-//Extra for Experts
-function mouseWheel(){
-  if (dx > 0 && dx < 30 && dy > 0 && dy < 30){
-    dx += 5;
-    dy += 5;
-  }
-}
-
 //W and S Keys
 function wSKeys(){
 
@@ -239,4 +234,12 @@ function loser(){
   textStyle('bold');
   text('WELL, WELL, WELL', width/2 - buttonWidth/1.7 * 1.5 + 100, height/2 - buttonHeight/3 + 10, buttonWidth * 3, buttonHeight * 2);
   text('Look who we have here.', width/2 - buttonWidth/1.95 * 1.6 + 30, height/2 - buttonHeight/15 + 50, buttonWidth * 3, buttonHeight * 2);
+}
+
+//Extra for Experts
+function mouseWheel(){
+  if (dx > 0 && dx < 30 && dy > 0 && dy < 30){
+    dx += 5;
+    dy += 5;
+  }
 }
