@@ -3,7 +3,7 @@
 // Feb 26th, 2025
 //
 // Extra for Experts:
-// - I have uncorperated mouse weheel into my project by using it to change the speed of the ball
+// - I have uncorperated mouse weheel into my project by using it to change the speed of the ball(it may take a bit to change speed but it changes very quick)
 
 //button dimensions
 let buttonWidth = 400;
@@ -56,6 +56,9 @@ function draw() {
     secondPlayer();
     bounce();
   }
+  else if (state === 'lose'){
+    loser();
+  }
 }
 
 //Main Page
@@ -76,45 +79,69 @@ function mainPage(){
   fill('lime');
   textSize(50);
   textStyle('bold');
-  text("Khoi's Version of Pong (Out of 1)", width/2 - buttonWidth/2 * 1.5 + buttonWidth/2/2 - 192, height/10 + buttonHeight/2 + 17);
+  text("Khoi's Version of Pong (Out of 1)", width/2 - buttonWidth/2 * 1.5 + buttonWidth/4 - 192, height/10 + buttonHeight/2 + 17);
 
   // Play Text
   textSize(50);
   textStyle('bold');
-  text('Play', width/2 - buttonWidth/4 + buttonWidth/2/2 - 50, height/3+buttonHeight/2 + 17);
+  text('Play', width/2 - buttonWidth/4 + buttonWidth/4 - 50, height/3+buttonHeight/2 + 17);
 
   //Control Text
   textSize(50);
   textStyle('bold');
-  text('Controls', width/2 - buttonWidth/4 + buttonWidth/2/2 - 100, height/2+buttonHeight/2 + 17);
+  text('Controls', width/2 - buttonWidth/4 + buttonWidth/4 - 100, height/2+buttonHeight/2 + 17);
 }
 
 //Control Page
 function controlPage(){
-  background('black')
+  background('black');
 
   //Banner
   fill('lime');
   rect(width/2 - buttonWidth/2, height/10, buttonWidth, buttonHeight);
-
+  
+  //Text
   fill('black');
   textSize(50);
   textStyle('bold');
-  text("Game Controls", width/2 - buttonWidth/2 + buttonWidth/2/2 - 79, height/10 + buttonHeight/2 + 17);
+  text("Game Controls", width/2 - buttonWidth/2 + buttonWidth/4 - 79, height/10 + buttonHeight/2 + 17);
 
   //Text Box
   fill('lime');
-  rect(width/2 - (width - 600)/2, height/2 - height/4, width - 600, height/1.5);
+  rect(width/2 - (width - 600)/2, height/2 - height/4, width - 600, height/3.25);
 
+  //Text
+  fill('black');
+  textSize(30);
+  textStyle('bold');
+  text("Player 1: W Key and S Key                                                             Player 2: Up Arrow and Down Arrow                               Scroll your mouse for a suprise!!                           As you saw, this game of pong is out of 1 so tread carefully.",width/2 - (width - 650)/2, height/2 - height/4.5, width - 650, height/1.5);
+  
+  //Play Button on Control Screen
+  fill('lime');
+  rect(width/2 - buttonWidth/4, height/1.5, buttonWidth/2, buttonHeight);
+
+  // Play Text on Control Screen
+  fill('black');
+  textSize(50);
+  textStyle('bold');
+  text('Play', width/2 - buttonWidth/4 + buttonWidth/4 - 50, height/1.5 + buttonHeight/2 + 17);
 }
 
 //If Buttons Clicked
 function mouseClicked(){
-  if (mouseX > width/2 - buttonWidth/4 && mouseY > height/3){
+
+  //PLay Button
+  if (mouseX > width/2 - buttonWidth/4 && mouseY > height/3 && state === 'main'){
     state = 'game';
+  }
+
+  //Control Button
   if (mouseX > width/2 - buttonWidth/(1.75*2) && mouseY > height/2){
     state = 'controls';
   }
+  //Play Button on Control Screen
+  if (mouseX > width/2 - buttonWidth/4 && mouseY > height/1.5 && state === 'controls'){
+    state = 'game';
   }
 }
 
@@ -127,7 +154,7 @@ function moveBall() {
 //Bounce Mechanics
 function bounce() {
   if (x > width - radius || x < 0 + radius) {
-    state = 'main';
+    state = 'lose';
   }
   
   if (y > height - radius || y < 0 + radius) {
@@ -135,12 +162,12 @@ function bounce() {
   }
 
   //First Player
-  if (x > firstX - radius && y > firstY && y < firstY + rectHeight) {
+  if (x > firstX - radius && x < firstX && y > firstY && y < firstY + rectHeight) {
     dx *= -1;
   }
 
   //Second Player
-  if (x < secondX + radius + rectWidth && y > secondY && y < secondY + rectHeight) {
+  if (x < secondX + radius + rectWidth && x > secondX && y > secondY && y < secondY + rectHeight) {
     dx *= -1;
   }
 }
@@ -198,4 +225,18 @@ function upDownArrows() {
   if (keyIsDown(DOWN_ARROW) && secondY < height - buttonHeight) {
     firstY += movementSpeed;
   }
+}
+
+function loser(){
+  background('lime');
+
+  //Text Box
+  fill('black');
+  rect(width/2 - buttonWidth/1.7*1.5, height/2 - buttonHeight/2*2, buttonWidth * 1.7, buttonHeight * 3);
+
+  //Text
+  fill('lime');
+  textStyle('bold');
+  text('WELL, WELL, WELL', width/2 - buttonWidth/1.7 * 1.5 + 100, height/2 - buttonHeight/3 + 10, buttonWidth * 3, buttonHeight * 2);
+  text('Look who we have here.', width/2 - buttonWidth/1.95 * 1.6 + 30, height/2 - buttonHeight/15 + 50, buttonWidth * 3, buttonHeight * 2);
 }
