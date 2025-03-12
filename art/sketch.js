@@ -5,46 +5,46 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+const LINE_SIZE = 25;
 let lineArray = [];
-let LINE_SIZE = 50;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  for (let x = 0; x < width; x+=LINE_SIZE){
-    for (let y = 0; y < height; y += LINE_SIZE){
-      someLine = spawnLine(x, y, LINE_SIZE);
+  for (let x = 0; x < width; x += LINE_SIZE) {
+    for (let y = 0; y < height; y += LINE_SIZE) {
+      let someLine = spawnLine(x, y, LINE_SIZE);
       lineArray.push(someLine);
     }
   }
-
 }
 
 function draw() {
   background(220);
-  for (let aline of lineArray) {
+
+  for (let aLine of lineArray) {
     line(aLine.x1, aLine.y1, aLine.x2, aLine.y2);
   }
 }
 
-function spawnLine(x, y, theSize){
+function spawnLine(x, y, theSize) {
   let theLine;
   let choice = random(100);
   if (choice < 50) {
-    //negative
+    //negative slope
     theLine = {
-      x1: x - theSize/2 , 
-      y1: y - theSize/2 , 
-      x2: x + theSize/2 , 
-      y2: y + theSize/2 ,
+      x1: x - theSize/2,
+      y1: y - theSize/2,
+      x2: x + theSize/2,
+      y2: y + theSize/2,
     };
   }
-  else{
-    //positive
+  else {
+    //positive slope
     theLine = {
-      x1: x - theSize/2 , 
-      y1: y + theSize/2 , 
-      x2: x + theSize/2 , 
-      y2: y - theSize/2 ,
+      x1: x - theSize/2,
+      y1: y + theSize/2,
+      x2: x + theSize/2,
+      y2: y - theSize/2,
     };
   }
   return theLine;
