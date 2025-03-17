@@ -54,6 +54,21 @@ function generateTile(){
   let current = maze.stack.pop();
   
   let tileAndWall = chooseNeighbor(current);
+  if (tileAndWall){
+    maze.stack.push(current);
+    tileAndWall.tile[tileAndWall.wall] = "open";
+    current[oppisiteWall(tileAndWall.wall)] = "open";
+    tileAndWall.tile.seen = true;
+    maze.stack.push(tileAndWall.tile);
+
+    current.isCurrent = false;
+    maze.stack[maze.stack.length-1].isCurrent = true;
+  }
+
+  else if (maze.tack.length !== 0){
+    current.isCurrent = false;
+    maze.stack[maze.stack.length-1].isCurrent = true;
+  }
 }
 
 function chooseNeighbor(tile){
@@ -103,11 +118,24 @@ function oppisiteWall(){
 }
 
 function drawMaze(){
-
+  push(); 
+  translate(-res, -res);
+  for (let i = 0; i < maze.tiles.length; i++){
+    for (let j = 0; j < maze.tiles[i].length; j++){
+      let tile = maze.tiles[i][j];
+    }
+  }
 }
 
 function drawTile(tile, i, j){
-  
+  strokeWeight(0);
+
+  if (tile.seen === true){
+    fill(0);
+    square(i, j, );
+  }
+
+  /// continue from here
 }
 
 
