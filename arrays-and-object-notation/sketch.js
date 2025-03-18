@@ -4,40 +4,52 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
-let maze;
+let maze = null;
 let pixelPerTile = 10;
+let count = 0;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(800, 450);
+  noStroke();
+
+  makeMaze(width / pixelPerTile + 2, height / pixelPerTile + 2);
+  drawMaze();
 
 }
 
-function draw() {
-  background(220); 
-  
+function draw() {  
+  background("grey");
+  if (count % 5 === 0){
+    if (maze.stack.length !== 0){
+      background("purple");
+      generateTile();
+      drawMaze();
+    }
+  }
+  count++;
 }
 
 function makeMaze(w, h){
   maze = {
-    "stack": [],
-    "tiles": [],
-    "w": w,
-    "h": h,
+    stack: [],
+    tiles: [],
+    w: w,
+    h: h,
   };
 
   for (let i = 0; i < w; i++){
     maze.tiles[i] = [];
     for(let j = 0; j < h; j++){
       maze.tiles[i][j] = {
-        "up": "wall",
-        "down": "wall",
-        "left": "wall",
-        "right": "wall",
-        "isStart": false,
-        "isCurrent": false,
-        "x": i,
-        "y": j,
-        "seen": false,
+        up: wall,
+        down: wall,
+        left: wall,
+        right: wall,
+        isStart: false,
+        isCurrent: false,
+        x: i,
+        y: j,
+        seen: false,
       };
       if (i === 0 ||  i === w - 1 || j === 0 || j === h - 1){
         maze.tiles[i][j].seen = true;
@@ -56,8 +68,8 @@ function generateTile(){
   let tileAndWall = chooseNeighbor(current);
   if (tileAndWall){
     maze.stack.push(current);
-    tileAndWall.tile[tileAndWall.wall] = "open";
-    current[oppisiteWall(tileAndWall.wall)] = "open";
+    tileAndWall.tile[tileAndWall.wall] = open;
+    current[oppisiteWall(tileAndWall.wall)] = open;
     tileAndWall.tile.seen = true;
     maze.stack.push(tileAndWall.tile);
 
@@ -76,53 +88,56 @@ function chooseNeighbor(tile){
 
   let upTile = maze.tiles[tile.x][tile.y + 1];
   if (!upTile.seen){
-    invis.push(["tile", upTile, "wall", "down"]);
+    invis.push([tile, upTile, wall, down]);
   }
 
   let downTile = maze.tiles[tile.x][tile.y - 1];
   if (!downTile.seen){
-    invis.push(["tile", downTile, "wall", "down"]);
+    invis.push([tile, downTile, wall, down]);
   }
 
   let leftTile = maze.tiles[tile.x - 1][tile.y];
   if (!leftTile.seen){
-    invis.push(["tile", leftTile, "wall", "down"]);
+    invis.push([tile, leftTile, wall, down]);
   }
 
   let rightTile = maze.tiles[tile.x + 1][tile.y];
   if (!rightTile.seen){
-    invis.push(["tile", rightTile, "wall", "down"]);
+    invis.push([tile, rightTile, wall, down]);
   }
 
   if (invis.length === 0){
     return null;
   }
+  return invis[Math.floor(Math.random()*invis.length)];
 }
 
-function oppisiteWall(){
-  if (wall === "up"){
-    return "down";
+function oppisiteWall(wall){
+  if (wall === up){
+    return down;
   }
 
-  else if (wall === "down"){
-    return "up";
+  else if (wall === down){
+    return up;
   }
 
-  else if (wall === "left"){
-    return "right";
+  else if (wall === left){
+    return right;
   }
 
-  else if (wall === "right"){
-    return "left";
+  else if (wall === right){
+    return left;
   }
 }
 
 function drawMaze(){
   push(); 
-  translate(-res, -res);
+  translate(-pixelPerTile, -pixelPerTile);
+
   for (let i = 0; i < maze.tiles.length; i++){
     for (let j = 0; j < maze.tiles[i].length; j++){
       let tile = maze.tiles[i][j];
+      drawTile(tile, i, j);
     }
   }
 }
@@ -132,10 +147,28 @@ function drawTile(tile, i, j){
 
   if (tile.seen === true){
     fill(0);
-    square(i, j, );
-  }
+    square(i*pixelPerTile, j*pixelPerTile, pixelPerTile);
 
-  /// continue from here
+    strokeWeight(2);
+    stroke("white");
+    if (tile.up === wall){
+      line(i*pixelPerTile,j*pixelPerTile,(i+1)*pixelPerTile,j*pixelPerTile);
+    }
+    if (tile.down === wall){
+      line(i*pixelPerTile,(j+1)*pixelPerTile,(i+1)*pixelPerTile,(j+1)*pixelPerTile);
+    }
+    if (tile.left === wall){
+      line((i+1)*pixelPerTile,j*pixelPerTile,(i+1)*pixelPerTile,(j+1)*pixelPerTile);
+    }
+    if (tile.right === wall){
+      line(i*pixelPerTile,j*pixelPerTile,i*pixelPerTile,(j+1)*pixelPerTile);
+    }
+  }
+  if (tile.isCurrent){
+    fill("orange");
+    noStroke();
+    circle(i*pixelPerTile + pixelPerTile/2, j*pixelPerTile + pixelPerTile/2, pixelPerTile/3);
+  }
 }
 
 
