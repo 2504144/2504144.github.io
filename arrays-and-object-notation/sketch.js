@@ -5,11 +5,14 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 let maze = null;
-let pixelPerTile = 10;
+let pixelPerTile = 25;
 let count = 0;
 
+const WALL = true;
+const OPEN = false;
+
 function setup() {
-  createCanvas(800, 450);
+  createCanvas(windowWidth, windowHeight);
   noStroke();
 
   makeMaze(width / pixelPerTile + 2, height / pixelPerTile + 2);
@@ -18,10 +21,9 @@ function setup() {
 }
 
 function draw() {  
-  background("grey");
-  if (count % 5 === 0){
-    if (maze.stack.length !== 0){
-      background("purple");
+  if (maze.stack.length !== 0){
+    if (count % 5 === 0){
+      background("lightblue");
       generateTile();
       drawMaze();
     }
@@ -41,10 +43,10 @@ function makeMaze(w, h){
     maze.tiles[i] = [];
     for(let j = 0; j < h; j++){
       maze.tiles[i][j] = {
-        up: wall,
-        down: wall,
-        left: wall,
-        right: wall,
+        up: WALL,
+        down: WALL,
+        left: WALL,
+        right: WALL,
         isStart: false,
         isCurrent: false,
         x: i,
@@ -68,8 +70,8 @@ function generateTile(){
   let tileAndWall = chooseNeighbor(current);
   if (tileAndWall){
     maze.stack.push(current);
-    tileAndWall.tile[tileAndWall.wall] = open;
-    current[oppisiteWall(tileAndWall.wall)] = open;
+    tileAndWall.tile[tileAndWall.wall] = OPEN;
+    current[oppisiteWall(tileAndWall.wall)] = OPEN;
     tileAndWall.tile.seen = true;
     maze.stack.push(tileAndWall.tile);
 
@@ -77,7 +79,7 @@ function generateTile(){
     maze.stack[maze.stack.length-1].isCurrent = true;
   }
 
-  else if (maze.tack.length !== 0){
+  else if (maze.stack.length !== 0){
     current.isCurrent = false;
     maze.stack[maze.stack.length-1].isCurrent = true;
   }
@@ -87,46 +89,46 @@ function chooseNeighbor(tile){
   let invis = [];
 
   let upTile = maze.tiles[tile.x][tile.y + 1];
-  if (!upTile.seen){
-    invis.push([tile, upTile, wall, down]);
+  if (tile.y > 0 && !upTile.seen){
+    invis.push({tile: upTile, wall: "down"});
   }
 
   let downTile = maze.tiles[tile.x][tile.y - 1];
-  if (!downTile.seen){
-    invis.push([tile, downTile, wall, down]);
+  if (tile.y < maze.h - 1 && !downTile.seen){
+    invis.push({tile: downTile, wall: "up"});
   }
 
   let leftTile = maze.tiles[tile.x - 1][tile.y];
-  if (!leftTile.seen){
-    invis.push([tile, leftTile, wall, down]);
+  if (tile.y > 0 && !leftTile.seen){
+    invis.push({tile: leftTile, wall: "right"});
   }
 
   let rightTile = maze.tiles[tile.x + 1][tile.y];
-  if (!rightTile.seen){
-    invis.push([tile, rightTile, wall, down]);
+  if (tile.x < maze.w && !rightTile.seen){  
+    invis.push({tile: rightTile, wall: "left"});
   }
 
   if (invis.length === 0){
     return null;
-  }
+  } 
   return invis[Math.floor(Math.random()*invis.length)];
 }
 
 function oppisiteWall(wall){
-  if (wall === up){
-    return down;
+  if (wall === "up"){
+    return "down";
   }
 
-  else if (wall === down){
-    return up;
+  else if (wall === "down"){
+    return "up";
   }
 
-  else if (wall === left){
-    return right;
+  else if (wall === "left"){
+    return "right";
   }
 
-  else if (wall === right){
-    return left;
+  else if (wall === "right"){
+    return "left";
   }
 }
 
@@ -151,16 +153,16 @@ function drawTile(tile, i, j){
 
     strokeWeight(2);
     stroke("white");
-    if (tile.up === wall){
+    if (tile.up === WALL){
       line(i*pixelPerTile,j*pixelPerTile,(i+1)*pixelPerTile,j*pixelPerTile);
     }
-    if (tile.down === wall){
+    if (tile.down === WALL){
       line(i*pixelPerTile,(j+1)*pixelPerTile,(i+1)*pixelPerTile,(j+1)*pixelPerTile);
     }
-    if (tile.left === wall){
+    if (tile.left === WALL){
       line((i+1)*pixelPerTile,j*pixelPerTile,(i+1)*pixelPerTile,(j+1)*pixelPerTile);
     }
-    if (tile.right === wall){
+    if (tile.right === WALL){
       line(i*pixelPerTile,j*pixelPerTile,i*pixelPerTile,(j+1)*pixelPerTile);
     }
   }
@@ -168,6 +170,7 @@ function drawTile(tile, i, j){
     fill("orange");
     noStroke();
     circle(i*pixelPerTile + pixelPerTile/2, j*pixelPerTile + pixelPerTile/2, pixelPerTile/3);
+
   }
 }
 
