@@ -5,14 +5,14 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 let maze = null;
-let pixelPerTile = 25;
+let pixelPerTile = 30;
 let count = 0;
 
 const WALL = true;
 const OPEN = false;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(800, 450);
   noStroke();
 
   makeMaze(width / pixelPerTile + 2, height / pixelPerTile + 2);
@@ -21,6 +21,8 @@ function setup() {
 }
 
 function draw() {  
+
+  //checks if there is any space left to cover
   if (maze.stack.length !== 0){
     if (count % 5 === 0){
       background("lightblue");
@@ -39,9 +41,9 @@ function makeMaze(w, h){
     h: h,
   };
 
-  for (let i = 0; i < w; i++){
+  for (let i = 0; i < w - 1; i++){
     maze.tiles[i] = [];
-    for(let j = 0; j < h; j++){
+    for(let j = 0; j < h - 1; j++){
       maze.tiles[i][j] = {
         up: WALL,
         down: WALL,
@@ -85,27 +87,28 @@ function generateTile(){
   }
 }
 
+//where to go
 function chooseNeighbor(tile){
   let invis = [];
 
   let upTile = maze.tiles[tile.x][tile.y + 1];
   if (tile.y > 0 && !upTile.seen){
-    invis.push({tile: upTile, wall: "down"});
+    invis.push({tile: upTile, wall: "up"});
   }
 
   let downTile = maze.tiles[tile.x][tile.y - 1];
   if (tile.y < maze.h - 1 && !downTile.seen){
-    invis.push({tile: downTile, wall: "up"});
+    invis.push({tile: downTile, wall: "down"});
   }
 
   let leftTile = maze.tiles[tile.x - 1][tile.y];
   if (tile.y > 0 && !leftTile.seen){
-    invis.push({tile: leftTile, wall: "right"});
+    invis.push({tile: leftTile, wall: "left"});
   }
 
   let rightTile = maze.tiles[tile.x + 1][tile.y];
   if (tile.x < maze.w && !rightTile.seen){  
-    invis.push({tile: rightTile, wall: "left"});
+    invis.push({tile: rightTile, wall: "right"});
   }
 
   if (invis.length === 0){
@@ -114,22 +117,31 @@ function chooseNeighbor(tile){
   return invis[Math.floor(Math.random()*invis.length)];
 }
 
+//sense wall
 function oppisiteWall(wall){
+
+  //up
   if (wall === "up"){
     return "down";
   }
 
+  //down
   else if (wall === "down"){
     return "up";
   }
 
+  //left
   else if (wall === "left"){
     return "right";
   }
 
+  //right
   else if (wall === "right"){
     return "left";
   }
+
+
+  return -1;
 }
 
 function drawMaze(){
