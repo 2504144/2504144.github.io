@@ -5,14 +5,14 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 let maze = null;
-let pixelPerTile = 30;
+let pixelPerTile = 50;
 let count = 0;
 
 const WALL = true;
 const OPEN = false;
 
 function setup() {
-  createCanvas(800, 450);
+  createCanvas(800, 400);
   noStroke();
 
   makeMaze(width / pixelPerTile + 2, height / pixelPerTile + 2);
@@ -92,12 +92,12 @@ function chooseNeighbor(tile){
   let invis = [];
 
   let upTile = maze.tiles[tile.x][tile.y + 1];
-  if (tile.y > 0 && !upTile.seen){
+  if (tile.y < maze.h -2 && !upTile.seen){
     invis.push({tile: upTile, wall: "up"});
   }
 
   let downTile = maze.tiles[tile.x][tile.y - 1];
-  if (tile.y < maze.h - 1 && !downTile.seen){
+  if (tile.y > 0 && !downTile.seen){
     invis.push({tile: downTile, wall: "down"});
   }
 
@@ -107,9 +107,10 @@ function chooseNeighbor(tile){
   }
 
   let rightTile = maze.tiles[tile.x + 1][tile.y];
-  if (tile.x < maze.w && !rightTile.seen){  
+  if (tile.x < maze.w - 1 && !rightTile.seen){
     invis.push({tile: rightTile, wall: "right"});
   }
+
 
   if (invis.length === 0){
     return null;
