@@ -4,17 +4,22 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+
 let maze = null;
+
+//tile size
 let pixelPerTile = 50;
 let count = 0;
 
+//to go through wall
 const WALL = true;
-const OPEN = false;
+const UNLOCK = false;
 
 function setup() {
   createCanvas(800, 400);
   noStroke();
-
+  
+  //create maze
   makeMaze(width / pixelPerTile + 2, height / pixelPerTile + 2);
   drawMaze();
 
@@ -34,6 +39,8 @@ function draw() {
 }
 
 function makeMaze(w, h){
+
+  //maze untilities
   maze = {
     stack: [],
     tiles: [],
@@ -44,6 +51,8 @@ function makeMaze(w, h){
   for (let i = 0; i < w - 1; i++){
     maze.tiles[i] = [];
     for(let j = 0; j < h - 1; j++){
+
+      //tiles
       maze.tiles[i][j] = {
         up: WALL,
         down: WALL,
@@ -55,11 +64,15 @@ function makeMaze(w, h){
         y: j,
         seen: false,
       };
+      
+      
       if (i === 0 ||  i === w - 1 || j === 0 || j === h - 1){
         maze.tiles[i][j].seen = true;
       }
     }
   }
+
+  //postions
   maze.tiles[1][1].isCurrent = true;
   maze.tiles[1][1].isStart = true;
   maze.tiles[1][1].seen = true;
@@ -72,8 +85,8 @@ function generateTile(){
   let tileAndWall = chooseNeighbor(current);
   if (tileAndWall){
     maze.stack.push(current);
-    tileAndWall.tile[tileAndWall.wall] = OPEN;
-    current[oppisiteWall(tileAndWall.wall)] = OPEN;
+    tileAndWall.tile[tileAndWall.wall] = UNLOCK;
+    current[oppisiteWall(tileAndWall.wall)] = UNLOCK;
     tileAndWall.tile.seen = true;
     maze.stack.push(tileAndWall.tile);
 
@@ -87,25 +100,29 @@ function generateTile(){
   }
 }
 
-//where to go
+//bounderies
 function chooseNeighbor(tile){
   let invis = [];
 
+  //border on top
   let upTile = maze.tiles[tile.x][tile.y + 1];
   if (tile.y < maze.h -2 && !upTile.seen){
     invis.push({tile: upTile, wall: "up"});
   }
 
+  //border bottom
   let downTile = maze.tiles[tile.x][tile.y - 1];
   if (tile.y > 0 && !downTile.seen){
     invis.push({tile: downTile, wall: "down"});
   }
 
+  //border left
   let leftTile = maze.tiles[tile.x - 1][tile.y];
   if (tile.y > 0 && !leftTile.seen){
     invis.push({tile: leftTile, wall: "left"});
   }
 
+  //border right?!?!?
   let rightTile = maze.tiles[tile.x + 1][tile.y];
   if (tile.x < maze.w - 1 && !rightTile.seen){
     invis.push({tile: rightTile, wall: "right"});
@@ -121,26 +138,25 @@ function chooseNeighbor(tile){
 //sense wall
 function oppisiteWall(wall){
 
-  //up
+  //if up then go down
   if (wall === "up"){
     return "down";
   }
 
-  //down
+  //if down then go up
   else if (wall === "down"){
     return "up";
   }
 
-  //left
+  //if left go right
   else if (wall === "left"){
     return "right";
   }
 
-  //right
+  //if right go left
   else if (wall === "right"){
     return "left";
   }
-
 
   return -1;
 }
@@ -179,6 +195,8 @@ function drawTile(tile, i, j){
       line(i*pixelPerTile,j*pixelPerTile,i*pixelPerTile,(j+1)*pixelPerTile);
     }
   }
+
+  //follows where tile is heading
   if (tile.isCurrent){
     fill("orange");
     noStroke();
