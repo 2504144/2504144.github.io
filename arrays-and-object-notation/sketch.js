@@ -52,20 +52,28 @@ function makeMaze(w, h){
     maze.tiles[i] = [];
     for(let j = 0; j < h - 1; j++){
 
-      //tiles
+      //tile
       maze.tiles[i][j] = {
+
+        //if tile blocked by wall
         up: WALL,
         down: WALL,
         left: WALL,
         right: WALL,
+
+        //if tile start or current
         isStart: false,
         isCurrent: false,
+
+        //positioning of tile
         x: i,
         y: j,
+
+        //seen
         seen: false,
       };
       
-      
+      //has tile been seen?
       if (i === 0 ||  i === w - 1 || j === 0 || j === h - 1){
         maze.tiles[i][j].seen = true;
       }
