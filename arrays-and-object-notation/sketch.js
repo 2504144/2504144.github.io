@@ -3,7 +3,7 @@
 // March 10th, 2025
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// I used the function floor where to rounds down a number,
 
 let maze = null;
 
@@ -11,9 +11,18 @@ let maze = null;
 let pixelPerTile = 50;
 let count = 0;
 
-//to go through wall
+//to go back through wall
 const WALL = true;
 const UNLOCK = false;
+
+//sound
+let audioWhistlePlayed = false;
+
+let player = {
+  x: 1,
+  y: 1,
+  size: pixelPerTile/2,
+};
 
 function setup() {
   createCanvas(800, 400);
@@ -21,8 +30,7 @@ function setup() {
   
   //create maze
   makeMaze(width / pixelPerTile + 2, height / pixelPerTile + 2);
-  drawMaze();
-
+  drawMaze(); 
 }
 
 function draw() {  
@@ -34,6 +42,16 @@ function draw() {
       generateTile();
       drawMaze();
     }
+  }
+  else{
+
+    //play once
+    if (!audioWhistlePlayed){
+      audioWhistle.play();
+      audioWhistlePlayed = true;
+    }
+    spawnPlayer();
+
   }
   count++;
 }
@@ -48,11 +66,10 @@ function makeMaze(w, h){
     h: h,
   };
 
+  //for each tile
   for (let i = 0; i < w - 1; i++){
     maze.tiles[i] = [];
     for(let j = 0; j < h - 1; j++){
-
-      //tile
       maze.tiles[i][j] = {
 
         //if tile blocked by wall
@@ -91,7 +108,11 @@ function generateTile(){
   let current = maze.stack.pop();
   
   let tileAndWall = chooseNeighbor(current);
+
+  //explore maze
   if (tileAndWall){
+    
+    //add to stack
     maze.stack.push(current);
     tileAndWall.tile[tileAndWall.wall] = UNLOCK;
     current[oppisiteWall(tileAndWall.wall)] = UNLOCK;
@@ -102,6 +123,7 @@ function generateTile(){
     maze.stack[maze.stack.length-1].isCurrent = true;
   }
 
+  //back track to find 
   else if (maze.stack.length !== 0){
     current.isCurrent = false;
     maze.stack[maze.stack.length-1].isCurrent = true;
@@ -130,38 +152,42 @@ function chooseNeighbor(tile){
     invis.push({tile: leftTile, wall: "left"});
   }
 
-  //border right?!?!?
-  let rightTile = maze.tiles[tile.x + 1][tile.y];
-  if (tile.x < maze.w - 1 && !rightTile.seen){
-    invis.push({tile: rightTile, wall: "right"});
+  //border right
+  if (tile.x + 1 < maze.tiles.length && maze.tiles[tile.x + 1] && maze.tiles[tile.x + 1][tile.y]){
+    let rightTile = maze.tiles[tile.x + 1][tile.y];
+    if (!rightTile.seen){
+      invis.push({tile: rightTile, wall: "right"});
+    }
   }
 
-
+  //all is filled
   if (invis.length === 0){
     return null;
   } 
+
+  //rounds down number and picks random
   return invis[Math.floor(Math.random()*invis.length)];
 }
 
 //sense wall
 function oppisiteWall(wall){
 
-  //if up then go down
+  //if up look down
   if (wall === "up"){
     return "down";
   }
 
-  //if down then go up
+  //if down look up
   else if (wall === "down"){
     return "up";
   }
 
-  //if left go right
+  //if left look right
   else if (wall === "left"){
     return "right";
   }
 
-  //if right go left
+  //if right look left
   else if (wall === "right"){
     return "left";
   }
@@ -171,8 +197,11 @@ function oppisiteWall(wall){
 
 function drawMaze(){
   push(); 
+
+  //switch origin
   translate(-pixelPerTile, -pixelPerTile);
 
+  //each tile
   for (let i = 0; i < maze.tiles.length; i++){
     for (let j = 0; j < maze.tiles[i].length; j++){
       let tile = maze.tiles[i][j];
@@ -182,14 +211,20 @@ function drawMaze(){
 }
 
 function drawTile(tile, i, j){
+  //for opening
   strokeWeight(0);
 
+  //walls
   if (tile.seen === true){
-    fill(0);
+    //draws pixel
+    fill("black");
     square(i*pixelPerTile, j*pixelPerTile, pixelPerTile);
 
+    //white walls
     strokeWeight(2);
     stroke("white");
+
+    //place walls
     if (tile.up === WALL){
       line(i*pixelPerTile,j*pixelPerTile,(i+1)*pixelPerTile,j*pixelPerTile);
     }
@@ -209,7 +244,48 @@ function drawTile(tile, i, j){
     fill("orange");
     noStroke();
     circle(i*pixelPerTile + pixelPerTile/2, j*pixelPerTile + pixelPerTile/2, pixelPerTile/3);
+  }
 
+  //start circle
+  if (tile.isStart){
+    fill('green');
+    noStroke();
+    circle(i * pixelPerTile + pixelPerTile/2, j * pixelPerTile + pixelPerTile/2, pixelPerTile/3);
+  }
+}
+
+//sounds
+function preload(){
+  audioWhistle = createAudio("cartoon whistle noise.wav");
+}
+
+//player
+function spawnPlayer(){
+  fill("green");
+  noStroke();
+  circle(player.x * pixelPerTile + pixelPerTile / 2, player.y * pixelPerTile + pixelPerTile / 2, player.size);
+}
+
+function keyPressed(){
+
+  //up
+  if (key === "w" && maze.tiles[player.x][player.y - 1].up === UNLOCK){
+    player.y--;
+  }
+
+  //down
+  if (key === "s" && player.y < maze.h - 1 && maze.tiles[player.x][player.y + 1].up === UNLOCK){
+    player.y++;
+  }
+
+  //left
+  if (key === "a" && maze.tiles[player.x - 1][player.y].left === UNLOCK){
+    player.x--;
+  }
+
+  //right
+  if (key === "d" && player.x < maze.w - 1 && maze.tiles[player.x + 1][player.y].right === UNLOCK){
+    player.x++;
   }
 }
 
