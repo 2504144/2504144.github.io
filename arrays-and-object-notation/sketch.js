@@ -2,13 +2,19 @@
 // Khoi Tran
 // March 10th, 2025
 //
+//
 // Extra for Experts:
-// I used preload and create audio sound to the end
+// I used preload and create audio sound to the end, also learnt text align if you havent taught that. 
+
+
+//recursive back tracking - reference
+//link- https://www.youtube.com/watch?v=HyK_Q5rrcr4
+//more helpful link- https://www.youtube.com/watch?v=jQFYh3nRfSQ
 
 let maze = null;
 
 //tile size
-let pixelPerTile = 50;
+let pixelPerTile = 100;
 let count = 0;
 
 //to go back through wall
@@ -18,6 +24,7 @@ const UNLOCK = false;
 //sound
 let audioWhistlePlayed = false;
 
+//player/object
 let player = {
   x: 1,
   y: 1,
@@ -25,7 +32,7 @@ let player = {
 };
 
 function setup() {
-  createCanvas(800, 400);
+  createCanvas(800, 400);//could not figuire out full screen
   noStroke();
   
   //create maze
@@ -45,7 +52,7 @@ function draw() {
     }
   }
   else{
-
+    
     //play once
     if (!audioWhistlePlayed){
       audioWhistle.play();
@@ -54,7 +61,14 @@ function draw() {
 
   }
   count++;
-}
+
+  //once won
+  if (maze.stack.length === 0){
+    if (player.x === maze.w - 2 && player.y === maze.h - 2){
+      winner();
+    }
+  }
+} 
 
 function makeMaze(w, h){
 
@@ -257,19 +271,21 @@ function drawTile(tile, i, j){
 //sounds
 function preload(){
   audioWhistle = createAudio("cartoon whistle noise.wav");
+  cheer = createAudio('crowd cheer');
 }
 
 //player
 function spawnPlayer(){
-  fill("green");
+  fill("red");
   noStroke();
   circle(player.x * pixelPerTile + pixelPerTile / 2, player.y * pixelPerTile + pixelPerTile / 2, player.size);
 }
 
+//movement
 function keyPressed(){
 
   //up
-  if (key === "w" && player.y > 1 && maze.tiles[player.x][player.y - 1].up === UNLOCK){
+  if (key === "w" && player.y >= 1 && maze.tiles[player.x][player.y].up === UNLOCK){
     player.y--;
   }
 
@@ -279,7 +295,7 @@ function keyPressed(){
   }
 
   //left
-  if (key === "a" && player.y > 1 && maze.tiles[player.x - 1][player.y].left === UNLOCK){
+  if (key === "a" && player.y >= 1 && maze.tiles[player.x - 1][player.y].left === UNLOCK){
     player.x--;
   }
 
@@ -289,7 +305,15 @@ function keyPressed(){
   }
 }
 
+//winner
+function winner(){
+  background("black");
+  fill("lightblue");
+  rect (width/4 , height/2 -height / 10, width / 2, height /5);
 
-//recursive back tracking- use this
-//use this link- https://www.youtube.com/watch?v=HyK_Q5rrcr4
-//better link- https://www.youtube.com/watch?v=jQFYh3nRfSQ
+  //text
+  fill("black");
+  textSize(48);
+  textAlign(CENTER, CENTER);
+  text("Well Done!", width / 2, height/2);
+}
