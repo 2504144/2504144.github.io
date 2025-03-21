@@ -3,7 +3,7 @@
 // March 10th, 2025
 //
 // Extra for Experts:
-// I used the function floor where to rounds down a number,
+// I used preload and create audio sound to the end
 
 let maze = null;
 
@@ -21,7 +21,7 @@ let audioWhistlePlayed = false;
 let player = {
   x: 1,
   y: 1,
-  size: pixelPerTile/2,
+  size: pixelPerTile/3,
 };
 
 function setup() {
@@ -41,6 +41,7 @@ function draw() {
       background("lightblue");
       generateTile();
       drawMaze();
+      spawnPlayer();
     }
   }
   else{
@@ -50,7 +51,6 @@ function draw() {
       audioWhistle.play();
       audioWhistlePlayed = true;
     }
-    spawnPlayer();
 
   }
   count++;
@@ -269,7 +269,7 @@ function spawnPlayer(){
 function keyPressed(){
 
   //up
-  if (key === "w" && maze.tiles[player.x][player.y - 1].up === UNLOCK){
+  if (key === "w" && player.y > 1 && maze.tiles[player.x][player.y - 1].up === UNLOCK){
     player.y--;
   }
 
@@ -279,7 +279,7 @@ function keyPressed(){
   }
 
   //left
-  if (key === "a" && maze.tiles[player.x - 1][player.y].left === UNLOCK){
+  if (key === "a" && player.y > 1 && maze.tiles[player.x - 1][player.y].left === UNLOCK){
     player.x--;
   }
 
