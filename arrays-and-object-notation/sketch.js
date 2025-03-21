@@ -14,7 +14,7 @@
 let maze = null;
 
 //tile size
-let pixelPerTile = 100;
+let pixelPerTile = 50; //change to your liking
 let count = 0;
 
 //to go back through wall
