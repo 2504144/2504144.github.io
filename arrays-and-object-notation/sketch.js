@@ -66,6 +66,7 @@ function draw() {
   if (maze.stack.length === 0){
     if (player.x === maze.w - 2 && player.y === maze.h - 2){
       winner();
+      cheer.play();//almsot had it for this
     }
   }
 } 
