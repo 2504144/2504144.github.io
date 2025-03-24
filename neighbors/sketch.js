@@ -1,13 +1,9 @@
-// 2D Array grid demo
+// 2D grid neighbors demo
 // Your Name
 // Date
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
-
-// let grid = [[0, 1, 1, 0], [1, 1, 0, 0], [0, 0, 1, 1], [0, 1, 0, 0],];
-
-// const CELL_SIZE = 100; - if you are just choozing a size
 
 let cellSize;
 const SQUARE_DIMENSIONS = 10;
@@ -38,14 +34,23 @@ function mousePressed() {
   let y = Math.floor(mouseY/cellSize);
 
   toggleCell(x, y);
+
+  toggleCell(x + 1, y);
+  toggleCell(x - 1, y);
+  toggleCell(x, y + 1);
+  toggleCell(x, y - 1);
+
 }
 
 function toggleCell(x, y) {
-  if (grid[y][x] === 0) {
-    grid[y][x] = 1;
-  }
-  else if (grid[y][x] === 1) {
-    grid[y][x] = 0;
+  //BS check cell is in grid
+  if (x >= 0 && x < SQUARE_DIMENSIONS && y >= 0 && y < SQUARE_DIMENSIONS){
+    if (grid[y][x] === 0) {
+      grid[y][x] = 1;
+    }
+    else if (grid[y][x] === 1) {
+      grid[y][x] = 0;
+    }
   }
 }
 
