@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-const CELL_SIZE = 15;
+const CELL_SIZE = 25;
 const RENDER_ON_FRAME = 1;
 let grid;
 let rows;
