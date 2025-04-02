@@ -11,8 +11,8 @@ let state;
 let bomb;
 const CELL_SIZE = 75;
 let grid;
-let rows;
-let cols;
+let rows = 20;
+let cols = 20;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -48,4 +48,8 @@ function generateEmptyGrid(cols, rows) {
     }
   }
   return newGrid;
+}
+
+function eachCell(x, y, w){
+  
 }
