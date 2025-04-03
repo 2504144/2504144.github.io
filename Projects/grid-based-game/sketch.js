@@ -25,6 +25,13 @@ function draw() {
   displayGrid();
 }
 
+function preload(){
+  bomb = image("cartoon-bomb.png");
+  shovel = image("silver-shovel.webp");
+  flag = image("flag.png");
+}
+
+//displaying add bombs
 function displayGrid() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
