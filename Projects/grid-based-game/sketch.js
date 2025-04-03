@@ -1,6 +1,6 @@
-// Project Title
-// Your Name
-// Date
+// Minesweeper
+// Khoi Tran
+// March 31st, 2025
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
@@ -19,10 +19,18 @@ function setup() {
   cols = Math.floor(width/CELL_SIZE);
   rows = Math.floor(height/CELL_SIZE);
   grid = generateEmptyGrid(cols, rows);
+
+  displayBomb();
 }
 
 function draw() {
   displayGrid();
+}
+
+function preload(){
+  bomb = loadImage("cartoon-bomb.png");
+  shovel = loadImage("silver-shovel.webp");
+  flag = loadImage("flag.png");
 }
 
 function displayGrid() {
@@ -52,4 +60,8 @@ function generateEmptyGrid(cols, rows) {
 
 function eachCell(x, y, w){
   
+}
+
+function displayBomb(){
+  image(bomb, 0, 0);
 }
