@@ -23,12 +23,17 @@ function setup() {
 
 function draw() {
   displayGrid();
+
+  //objects
+  displayBomb();
+  displayFlag();
+  displayShovel();
 }
 
 function preload(){
-  bomb = image("cartoon-bomb.png");
-  shovel = image("silver-shovel.webp");
-  flag = image("flag.png");
+  bomb = loadImage("cartoon-bomb.png");
+  shovel = loadImage("silver-shovel.webp");
+  flag = loadImage("flag.png");
 }
 
 //displaying add bombs
@@ -57,6 +62,19 @@ function generateEmptyGrid(cols, rows) {
   return newGrid;
 }
 
+//going through cells
 function eachCell(x, y, w){
   
+}
+
+function displayBomb(){
+  image(bomb, 0, 0, CELL_SIZE, CELL_SIZE);
+}
+
+function displayShovel(){
+  image(shovel, 0, 0, CELL_SIZE, CELL_SIZE);
+}
+
+function displayFlag(){
+  image(flag, 0, 0, CELL_SIZE, CELL_SIZE);
 }
