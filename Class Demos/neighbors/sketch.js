@@ -29,6 +29,15 @@ function draw() {
   displayGrid();
 }
 
+function keyPressed(){
+  if (key === "e"){
+    grid = generateEmptyGrid(cols, rows);
+  }
+  else if (key === "r"){
+    grid = generateRandomGrid();
+  }
+}
+
 function mousePressed() {
   let x = Math.floor(mouseX/cellSize);
   let y = Math.floor(mouseY/cellSize);
@@ -54,7 +63,7 @@ function toggleCell(x, y) {
   }
 }
 
-function keyPressed() {
+function keyIsPressed() {
   if (key === "r") {
     grid = generateRandomGrid(SQUARE_DIMENSIONS, SQUARE_DIMENSIONS);
   }

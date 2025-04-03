@@ -9,6 +9,8 @@
 - [2D Array Grid](grid)
 - [Grid Neighbors](neighbors)
 - [Rectangle Grid](rectangle-grid)
+- [Game of Life Demo](game-of-life)
+- [Character Grid](character-grid)
 # CS30 Projects
 - [Interactive Scene](interactive-scene)
 - [Arrays and Object Notation](arrays-and-object-notation)
