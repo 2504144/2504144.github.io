@@ -34,7 +34,7 @@ function displayCell(x, y){
       else if (grid[y][x] === 1){
         fill("black");
       }
-      square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+      rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
     }
   }
 }
@@ -45,7 +45,7 @@ function generateRandomGrid(cols, rows){
   for ( let y = 0; y < rows; y++){
     newGrid.push([]);
     for (x = 0; x < cols; x++){
-      if(random(100) < 50){
+      if(random(0, 100) < 50){
         newgrid[y].push(0);
       }
       else{
