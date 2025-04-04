@@ -10,8 +10,8 @@ const OPEN_TILE = 0;
 const IMPASSIBLE = 1;
 const PLAYER = 9;
 let thePlayer = {
-  x: 0,
-  y: 0,
+  x: random(0, rows),
+  y: random(0, cols),
 };
 let grassImg;
 let pathImg;

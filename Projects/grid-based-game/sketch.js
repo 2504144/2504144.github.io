@@ -16,18 +16,26 @@ let cols = 20;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  cols = Math.floor(width/CELL_SIZE);
-  rows = Math.floor(height/CELL_SIZE);
+  cols = Math.floor(width/CELL_SIZE/1.1);
+  rows = Math.floor(height/CELL_SIZE/1.25);
   grid = generateEmptyGrid(cols, rows);
 }
 
 function draw() {
+  background("grey");
+
+  // changed origin so up against window
+  translate(CELL_SIZE / 1.1, CELL_SIZE / 1.25);
+
+  //display grid
   displayGrid();
 
-  //objects
+  //bomb check
   displayBomb();
-  displayFlag();
-  displayShovel();
+
+  //diffferent states
+  displayFlagButton();
+  displayShovelButton();
 }
 
 function preload(){
@@ -40,12 +48,6 @@ function preload(){
 function displayGrid() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      if (grid[y][x] === 0) {
-        fill("white");
-      }
-      else if (grid[y][x] === 1) {
-        fill("black");
-      }
       square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
     }
   }
@@ -62,19 +64,24 @@ function generateEmptyGrid(cols, rows) {
   return newGrid;
 }
 
-//going through cells
-function eachCell(x, y, w){
-  
-}
-
 function displayBomb(){
-  image(bomb, 0, 0, CELL_SIZE, CELL_SIZE);
+  bomb = {
+    x: random(rows),
+    y: random(cols),
+  };
+  image(bomb, bomb.x, bomb.y, CELL_SIZE, CELL_SIZE);
 }
 
-function displayShovel(){
+function displayShovelButton(){
   image(shovel, 0, 0, CELL_SIZE, CELL_SIZE);
 }
 
-function displayFlag(){
+function displayFlagButton(){
+  let flag = {
+    x = width/2 - CELL_SIZE + CELL_SIZE/2,
+    y = height+ height/8 - CELL_SIZE + CELL_SIZE/2,
+    width,
+    height,
+  };
   image(flag, 0, 0, CELL_SIZE, CELL_SIZE);
 }
