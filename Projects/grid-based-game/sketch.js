@@ -7,7 +7,13 @@
 
 // USE THIS AS REFERENCE - https://www.youtube.com/watch?v=LFU5ZlrR21E
 
-let state;
+let buttonX;
+let buttonY;
+let spaceInBetween;
+
+//mode
+let state = "shovel";
+
 let bomb;
 const CELL_SIZE = 75;
 let grid;
@@ -19,10 +25,17 @@ function setup() {
   cols = Math.floor(width/CELL_SIZE/1.1);
   rows = Math.floor(height/CELL_SIZE/1.25);
   grid = generateEmptyGrid(cols, rows);
+
+  //variables for buttons
+  let gridWidth = CELL_SIZE * cols;
+  buttonX = gridWidth/2;
+  buttonY = rows * CELL_SIZE + 25;
+  spaceInBetween = CELL_SIZE * 2;
 }
 
 function draw() {
   background("grey");
+  fill("white");
 
   // changed origin so up against window
   translate(CELL_SIZE / 1.1, CELL_SIZE / 1.25);
@@ -31,11 +44,9 @@ function draw() {
   displayGrid();
 
   //bomb check
-  displayBomb();
+  bombsPlaced();
 
-  //diffferent states
-  displayFlagButton();
-  displayShovelButton();
+  buttons();
 }
 
 function preload(){
@@ -58,30 +69,76 @@ function generateEmptyGrid(cols, rows) {
   for (let y = 0; y < rows; y++) {
     newGrid.push([]);
     for (let x = 0; x < cols; x++) {
-      newGrid[y].push(0);
+      newGrid[y].push({
+        bomb: false,
+        revealed: false,
+        flagged: false,
+        neighbors: 0,
+      });
+
     }
   }
   return newGrid;
 }
 
-function displayBomb(){
-  bomb = {
-    x: random(rows),
-    y: random(cols),
-  };
-  image(bomb, bomb.x, bomb.y, CELL_SIZE, CELL_SIZE);
+//buttons
+function buttons(){
+
+  //shovel
+  if (state === "shovel"){
+    fill('green');
+    square(buttonX - spaceInBetween, buttonY, CELL_SIZE);
+    image(shovel, buttonX - spaceInBetween, buttonY, CELL_SIZE, CELL_SIZE);
+
+    fill('red');
+    square(buttonX + spaceInBetween, buttonY, CELL_SIZE);
+    image(flag, buttonX + spaceInBetween, buttonY, CELL_SIZE, CELL_SIZE);
+  }
+
+  //flag
+  if (state === "flag"){
+    fill('green');
+    square(buttonX + spaceInBetween, buttonY, CELL_SIZE);
+    image(flag, buttonX + spaceInBetween, buttonY, CELL_SIZE, CELL_SIZE);
+
+    fill('red');
+    square(buttonX - spaceInBetween, buttonY, CELL_SIZE);
+    image(shovel, buttonX - spaceInBetween, buttonY, CELL_SIZE, CELL_SIZE);
+  }
 }
 
-function displayShovelButton(){
-  image(shovel, 0, 0, CELL_SIZE, CELL_SIZE);
+function mousePressed(){
+  //updated mouse positioning due to translation
+  mouseX = mouseX - CELL_SIZE / 1.1;
+  mouseY = mouseY - CELL_SIZE / 1.25;
+
+  //if clicked
+  if (mouseX > buttonX - spaceInBetween && mouseX < buttonX - spaceInBetween + CELL_SIZE && mouseY > buttonY && mouseY < buttonY + CELL_SIZE){
+    state = "shovel";
+  }
+
+  else if (mouseX > buttonX + spaceInBetween && mouseX < buttonX + spaceInBetween + CELL_SIZE && mouseY > buttonY && mouseY < buttonY + CELL_SIZE){
+    state = "flag";
+  }
 }
 
-function displayFlagButton(){
-  let flag = {
-    x = width/2 - CELL_SIZE + CELL_SIZE/2,
-    y = height+ height/8 - CELL_SIZE + CELL_SIZE/2,
-    width,
-    height,
-  };
-  image(flag, 0, 0, CELL_SIZE, CELL_SIZE);
+function bombsPlaced(numberOfBombs){
+  placed = 0;
+  while (placed < numberOfBombs){
+    x = floor(random(cols));
+    y = floor(random(rows));
+    if (!grid[y][x].bomb){
+      grid[y][x].bomb = true;
+      placed++;
+      image(bomb, x, y, CELL_SIZE, CELL_SIZE);
+    }
+  }
+}
+
+function amountOfNeighbors(){
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      
+    }
+  }
 }
