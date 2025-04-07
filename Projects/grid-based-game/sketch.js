@@ -20,11 +20,17 @@ let grid;
 let rows = 20;
 let cols = 20;
 
+let numberOfBombs = 5;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   cols = Math.floor(width/CELL_SIZE/1.1);
   rows = Math.floor(height/CELL_SIZE/1.25);
   grid = generateEmptyGrid(cols, rows);
+
+  //bombs
+  bombsPlaced(numberOfBombs);
+  amountOfNeighbors();
 
   //variables for buttons
   let gridWidth = CELL_SIZE * cols;
@@ -43,9 +49,6 @@ function draw() {
   //display grid
   displayGrid();
 
-  //bomb check
-  bombsPlaced();
-
   buttons();
 }
 
@@ -57,11 +60,49 @@ function preload(){
 
 //displaying add bombs
 function displayGrid() {
+  let cellX;
+  let cellY;
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+
+      //made for different origin
+      cellX = x * CELL_SIZE;
+      cellY = y * CELL_SIZE;
+
+      if (grid[y][x].revealed){
+
+        //revealed cells
+        fill("green");
+      }
+      else{
+
+        //hidden cells
+        fill("grey");
+      }
+      square(cellX, cellY, CELL_SIZE);
+
+      //show numbers if bomb not clicked
+      if (grid[y][x].revealed && grid[y][x].neighbors > 0 && !grid[y][x].bomb){
+        fill("white");
+        textSize(20);
+        textAlign(CENTER);
+        text(grid[y][x].neighbors, cellX + CELL_SIZE/2,cellY + CELL_SIZE/2);
+      }
+
+      //placing flag
+      if (!grid[y][x].revealed && grid[y][x].flagged){
+        image(flag, cellX, cellY, CELL_SIZE, CELL_SIZE);
+      }
+
+      //if bomb clicked
+      if (grid[y][x].revealed && grid[y][x].bomb){
+        image(bomb, cellX, cellY, CELL_SIZE, CELL_SIZE);
+      }
     }
   }
+
+
 }
 
 function generateEmptyGrid(cols, rows) {
@@ -109,36 +150,69 @@ function buttons(){
 
 function mousePressed(){
   //updated mouse positioning due to translation
-  mouseX = mouseX - CELL_SIZE / 1.1;
-  mouseY = mouseY - CELL_SIZE / 1.25;
+  mouseX = mouseX - CELL_SIZE/1.1;
+  mouseY = mouseY - CELL_SIZE/1.25;
+
+  //find tile
+  cellX = floor(mouseX / CELL_SIZE);
+  cellY = floor(mouseY / CELL_SIZE);
 
   //if clicked
-  if (mouseX > buttonX - spaceInBetween && mouseX < buttonX - spaceInBetween + CELL_SIZE && mouseY > buttonY && mouseY < buttonY + CELL_SIZE){
-    state = "shovel";
-  }
+  if (cellX >= 0 && cellX < cols && cellY >= 0 && cellY < rows){
 
-  else if (mouseX > buttonX + spaceInBetween && mouseX < buttonX + spaceInBetween + CELL_SIZE && mouseY > buttonY && mouseY < buttonY + CELL_SIZE){
-    state = "flag";
+    if (state === "shovel" && !grid[cellY][cellX].flagged){
+      grid[cellY][cellX].revealed = true;
+    }
+
+    else if (state === "flag" && !grid[cellY][cellX].revealed){
+      grid[cellY][cellX].flagged = !grid[cellY][cellX];
+    }
   }
 }
 
 function bombsPlaced(numberOfBombs){
   placed = 0;
+    
   while (placed < numberOfBombs){
-    x = floor(random(cols));
-    y = floor(random(rows));
+
+    //random placement
+    let x = floor(random(cols));
+    let y = floor(random(rows));
+    grid[y][x];
+
     if (!grid[y][x].bomb){
       grid[y][x].bomb = true;
       placed++;
-      image(bomb, x, y, CELL_SIZE, CELL_SIZE);
     }
   }
 }
 
 function amountOfNeighbors(){
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      
+  let count;
+
+  for (let y = 0; y < rows; y++){
+    for (let x = 0; x < cols; x ++){
+      if (!grid[y][x].bomb){
+        bombCount = 0;
+
+        //check for a 3 by 3 squar around
+        for (let neighborY = -1; neighborY <= 1; neighborY++){
+          for (let neighborX = -1; neighborX <= 1; neighborX++){
+            newNeighborY = y + neighborY;
+            newNeighborX = x + neighborX;
+
+            //doesnt count current cell and out of bounds
+            if (newNeighborY >= 0 && newNeighborY < rows && newNeighborX >= 0 && newNeighborX < cols ){
+              if (grid[newNeighborY][newNeighborX].bomb){
+                bombCount++;
+              }
+            }
+          }
+        }
+      }
+
+      //update neighbors
+      grid[y][x].neighbors = bombCount;
     }
   }
 }
