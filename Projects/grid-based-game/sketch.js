@@ -1,11 +1,12 @@
-// Project Title
-// Your Name
+// Minesweeper
+// Khoi Tran
 // Date
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
 // USE THIS AS REFERENCE - https://www.youtube.com/watch?v=LFU5ZlrR21E
+//color codes - https://www.computerhope.com/htmcolor.htm
 
 let buttonX;
 let buttonY;
@@ -73,12 +74,12 @@ function displayGrid() {
       if (grid[y][x].revealed){
 
         //revealed cells
-        fill("green");
+        fill(139, 69, 19);//saddle brown
       }
       else{
 
         //hidden cells
-        fill("grey");
+        fill(52, 124, 44); //jungle green
       }
       square(cellX, cellY, CELL_SIZE);
 
@@ -150,12 +151,17 @@ function buttons(){
 
 function mousePressed(){
   //updated mouse positioning due to translation
-  mouseX = mouseX - CELL_SIZE/1.1;
-  mouseY = mouseY - CELL_SIZE/1.25;
+  shiftedMouseX = mouseX - CELL_SIZE/1.1;
+  shiftedMouseY = mouseY - CELL_SIZE/1.25;
 
-  //find tile
-  cellX = floor(mouseX / CELL_SIZE);
-  cellY = floor(mouseY / CELL_SIZE);
+  //with in tile
+  cellX = floor(shiftedMouseX / CELL_SIZE);
+  cellY = floor(shiftedMouseY / CELL_SIZE);
+
+  //flag state
+  if (shiftedMouseX > buttonX + spaceInBetween && shiftedMouseX < buttonX + spaceInBetween + CELL_SIZE && shiftedMouseY > buttonY && shiftedMouseY < buttonY + CELL_SIZE){
+    state === "flag";
+  }
 
   //if clicked
   if (cellX >= 0 && cellX < cols && cellY >= 0 && cellY < rows){
@@ -166,6 +172,7 @@ function mousePressed(){
 
     else if (state === "flag" && !grid[cellY][cellX].revealed){
       grid[cellY][cellX].flagged = !grid[cellY][cellX];
+      image(flag, cellY, cellX, CELL_SIZE, CELL_SIZE);
     }
   }
 }
@@ -188,7 +195,7 @@ function bombsPlaced(numberOfBombs){
 }
 
 function amountOfNeighbors(){
-  let count;
+  let bombCount;
 
   for (let y = 0; y < rows; y++){
     for (let x = 0; x < cols; x ++){
