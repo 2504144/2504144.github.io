@@ -20,7 +20,7 @@ let grid;
 let rows = 20;
 let cols = 20;
 
-let numberOfBombs = 5;
+let numberOfBombs = 20;
 let bombCount = numberOfBombs;
 
 function setup() {
@@ -88,8 +88,8 @@ function displayGrid() {
       //show numbers if bomb not clicked
       if (grid[y][x].revealed && grid[y][x].neighbors > 0 && !grid[y][x].bomb){
         fill("white");
+        textAlign(CENTER, CENTER);
         textSize(20);
-        textAlign(CENTER);
         text(grid[y][x].neighbors, cellX + CELL_SIZE/2,cellY + CELL_SIZE/2);
       }
 
@@ -238,6 +238,6 @@ function bombCounter(){
   fill("white");
   textSize(35);
   textStyle("bold");
-  textAlign(CENTER);
+  textAlign(CENTER, CENTER);
   text("Bombs: " + bombCount, buttonX + CELL_SIZE/2, buttonY + CELL_SIZE/2);
 }
