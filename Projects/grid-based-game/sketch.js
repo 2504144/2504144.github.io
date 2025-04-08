@@ -52,13 +52,18 @@ function draw() {
 
   buttons();
 
-  bombCounter();
+  bombCounter(); 
+
+  ending();
 }
 
 function preload(){
   bomb = loadImage("cartoon-bomb.png");
   shovel = loadImage("silver-shovel.webp");
   flag = loadImage("flag.png");
+
+  explosion = createVideo("explosion.mp4");
+  explosion.hide();
 }
 
 //displaying add bombs
@@ -240,4 +245,12 @@ function bombCounter(){
   textStyle("bold");
   textAlign(CENTER, CENTER);
   text("Bombs: " + bombCount, buttonX + CELL_SIZE/2, buttonY + CELL_SIZE/2);
+}
+
+//plays video
+function ending(){
+  if (state === "bomb"){
+    image(explosion, 0, 0, CELL_SIZE * cols, CELL_SIZE * rows); 
+    explosion.loop();
+  }
 }
