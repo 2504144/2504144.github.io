@@ -15,13 +15,13 @@ let spaceInBetween;
 //mode
 let state = "shovel";
 
-let bomb;
 const CELL_SIZE = 75;
 let grid;
 let rows = 20;
 let cols = 20;
 
 let numberOfBombs = 5;
+let bombCount = numberOfBombs;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -51,6 +51,8 @@ function draw() {
   displayGrid();
 
   buttons();
+
+  bombCounter();
 }
 
 function preload(){
@@ -96,13 +98,12 @@ function displayGrid() {
         image(flag, cellX, cellY, CELL_SIZE, CELL_SIZE);
       }
 
-      //if bomb clicked
+      //shows bomb if clicked
       if (grid[y][x].revealed && grid[y][x].bomb){
         image(bomb, cellX, cellY, CELL_SIZE, CELL_SIZE);
       }
     }
   }
-
 
 }
 
@@ -158,9 +159,14 @@ function mousePressed(){
   cellX = floor(shiftedMouseX / CELL_SIZE);
   cellY = floor(shiftedMouseY / CELL_SIZE);
 
+  //shovel state
+  if (shiftedMouseX > buttonX - spaceInBetween && shiftedMouseX < buttonX - spaceInBetween + CELL_SIZE && shiftedMouseY > buttonY && shiftedMouseY < buttonY + CELL_SIZE){
+    state = "shovel";
+  }
+
   //flag state
   if (shiftedMouseX > buttonX + spaceInBetween && shiftedMouseX < buttonX + spaceInBetween + CELL_SIZE && shiftedMouseY > buttonY && shiftedMouseY < buttonY + CELL_SIZE){
-    state === "flag";
+    state = "flag";
   }
 
   //if clicked
@@ -169,9 +175,13 @@ function mousePressed(){
     if (state === "shovel" && !grid[cellY][cellX].flagged){
       grid[cellY][cellX].revealed = true;
     }
+    //if bomb clicked
+    if (state === "shovel" && grid[cellY][cellX].bomb){
+      state = "bomb"; 
+    }
 
     else if (state === "flag" && !grid[cellY][cellX].revealed){
-      grid[cellY][cellX].flagged = !grid[cellY][cellX];
+      grid[cellY][cellX].flagged = !grid[cellY][cellX].flagged;
       image(flag, cellY, cellX, CELL_SIZE, CELL_SIZE);
     }
   }
@@ -222,4 +232,12 @@ function amountOfNeighbors(){
       grid[y][x].neighbors = bombCount;
     }
   }
+}
+
+function bombCounter(){
+  fill("white");
+  textSize(35);
+  textStyle("bold");
+  textAlign(CENTER);
+  text("Bombs: " + bombCount, buttonX + CELL_SIZE/2, buttonY + CELL_SIZE/2);
 }
