@@ -19,6 +19,7 @@ let buttonHeight = 60;
 let buttonX;
 let buttonY;
 let spaceInBetween;
+let gridWidth;
 
 //mode
 let state = "shovel";
@@ -34,6 +35,8 @@ let numberOfBombs = 20;
 let bombCount = numberOfBombs;
 
 let playOnce = false;
+let total = explosion.numFrames();
+let crurrentFrame = explosion.getCurrentFrame();
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -46,10 +49,14 @@ function setup() {
   amountOfNeighbors();
 
   //variables for buttons
-  let gridWidth = CELL_SIZE * cols;
+  gridWidth = CELL_SIZE * cols;
   buttonX = gridWidth/2;
   buttonY = rows * CELL_SIZE + 25;
   spaceInBetween = CELL_SIZE * 2;
+
+  //bomb video
+  frameRate(30);
+
 }
 
 function draw() {
@@ -346,7 +353,7 @@ function amountOfNeighbors(){
       if (!grid[y][x].bomb){
         bombCount = 0;
 
-        //check for a 3 by 3 squar around
+        //check for a 3 by 3 square around
         for (let neighborY = -1; neighborY <= 1; neighborY++){
           for (let neighborX = -1; neighborX <= 1; neighborX++){
             newNeighborY = y + neighborY;
@@ -378,9 +385,9 @@ function bombCounter(){
 
 //plays video
 function ending(){
-  if (state === "bomb" && playOnce === false){
-    image(explosion, 0, 0, CELL_SIZE * cols, CELL_SIZE * rows); 
-    //explosion.play();
-    playOnce = true;
+
+  //plays explosion once
+  if (state === "bomb" && playOnce === false && explosion.getCurrentFrame() < 20){
+    image(explosion, 0, 0, CELL_SIZE * cols, CELL_SIZE * rows);
   }
 }
