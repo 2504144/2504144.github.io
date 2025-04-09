@@ -95,7 +95,7 @@ function mainPage(){
   text('Controls', width/2 - buttonWidth/4 + buttonWidth/4 - 100, height/2+buttonHeight/2 + 17);
 }
 
-//Control Page
+//Controls Page
 function controlPage(){
   background('black');
 
