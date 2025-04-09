@@ -6,7 +6,8 @@
 // - describe what you did to take this project "above and beyond"
 
 // USE THIS AS REFERENCE - https://www.youtube.com/watch?v=LFU5ZlrR21E
-//color codes - https://www.computerhope.com/htmcolor.htm
+//color codes - https://www.computerhope.com/htmcolor.htm\
+//chroma keying - https://github.com/brianchirls/Seriously.js/wiki/Chroma-Key
 
 let buttonX;
 let buttonY;
@@ -62,7 +63,7 @@ function preload(){
   shovel = loadImage("silver-shovel.webp");
   flag = loadImage("flag.png");
 
-  explosion = createVideo("explosion.mp4");
+  explosion = createVideo("pre-keyed-explosion-unscreen.mp4");
   explosion.hide();
 }
 
@@ -70,6 +71,7 @@ function preload(){
 function displayGrid() {
   let cellX;
   let cellY;
+  
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
