@@ -3,11 +3,11 @@
 // Date
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// - I learnt how to use (createVideo) for my winning screen and also learnt about (numFrames) inorder to play the explosion once
 
-// USE THIS AS REFERENCE - https://www.youtube.com/watch?v=LFU5ZlrR21E
+// reference for mine sweeper logic - https://www.youtube.com/watch?v=LFU5ZlrR21E
 //color codes - https://www.computerhope.com/htmcolor.htm\
-//chroma keying - https://github.com/brianchirls/Seriously.js/wiki/Chroma-Key
+//chroma keying - https://github.com/brianchirls/Seriously.js/wiki/Chroma-Key - didnt end up using
 
 //game state
 let gameState = "main";
@@ -95,60 +95,60 @@ function preload(){
   noice.hide();
 }
 
-//Main Page
+//main screen
 function mainPage(){
   background("grey");
 
-  //Banner
+  //banner
   fill("black");
   rect(width/2 - buttonWidth/2, height/10, buttonWidth, buttonHeight);
 
-  //Play Button
+  //play button
   rect(width/2 - buttonWidth/4, height/3, buttonWidth/2, buttonHeight);
 
-  //Controls Button
+  //controls button
   rect(width/2 - buttonWidth/(1.75 * 2), height/2, buttonWidth/1.75, buttonHeight);
 
-  //Banner Text
+  //banner text
   fill("white");
   textSize(50);
   textStyle("bold");
   textAlign(CENTER, CENTER);
   text("Minesweeper", width/2, height/10 + buttonHeight/2);
 
-  // Play Text
+  // play text
   textSize(40);
   textStyle("bold");
   textAlign(CENTER,CENTER);
   text("Play", width/2, height/3 + buttonHeight/2);
 
-  //Control Text
+  //control text
   textSize(40);
   textStyle("bold");
   textAlign(CENTER,CENTER);
   text("Controls", width/2, height/2 + buttonHeight/2);
 }
 
-//Controls Page
+//controls screen
 function controlPage(){
   background("black");
 
-  //Banner
+  //banner
   fill("grey");
   rect(width/2 - buttonWidth/2, height/10, buttonWidth, buttonHeight);
   
-  //Text
+  //text
   fill("white");
   textSize(50);
   textStyle("bold");
   textAlign(CENTER, CENTER);
   text("Game Controls", width/2, height/10 + buttonHeight/2);
 
-  //Text Box
+  //text box
   fill("grey");
   rect(width/2 - (width - 650)/2, height/2 - height/4, width - 650, height/2.75);
 
-  //Text
+  //text
   fill("white");
   textSize(30);
   textStyle("bold");
@@ -157,11 +157,11 @@ function controlPage(){
   text("- Find all the bombs",width/2 - (width - 650)/2, height/2 - height/1.9 + 55 * 2, width - 650, height/1.5);
   text("-Good luck!",width/2 - (width - 650)/2, height/2 - height/1.9 + 55 * 3, width - 650, height/1.5);
 
-  //Play Button on Control Screen
+  //play button on control screen
   fill("grey");
   rect(width/2 - buttonWidth/4, height/1.45, buttonWidth/2 , buttonHeight);
 
-  // Play Text on Control Screen
+  // play text on control screen
   fill("white");
   textSize(40);
   textStyle("bold");
@@ -200,13 +200,16 @@ function game(){
   // changed origin so up against window
   translate(CELL_SIZE / 1.1, CELL_SIZE / 1.25);
 
+  //chovel and flag
   buttons();
 
   //display grid
   displayGrid();
 
+  //visual representation for amount of bombs
   bombCounter(); 
 
+  //check win function
   winCheck();
 
   ending();
@@ -304,17 +307,17 @@ function buttons(){
 }
 
 function mousePressed(){
-  //PLay Button
+  //pLay Button
   if (mouseX > width/2 - buttonWidth/4 && mouseX < width/2 + buttonWidth/4 && mouseY > height/3 && mouseY < height/3 + buttonHeight && gameState === "main"){
     gameState = "game";
   }
   
-  //Control Button
+  //control button
   if (mouseX > width/2 - buttonWidth/(1.75*2) && mouseX < width/2 + buttonWidth/(1.75*2) && mouseY > height/2 && mouseY < height/2 + buttonHeight && gameState === "main"){
     gameState = "controls";
   }
   
-  //Play Button on Control Screen
+  //play button on control Screen
   if (mouseX > width/2 - buttonWidth/4 && mouseX < width/2 + buttonWidth/4 && mouseY > height/1.5 && mouseY < height/1.5 + buttonHeight && gameState === "controls"){
     gameState = "game";
   }
@@ -436,17 +439,25 @@ function bombCounter(){
 function winCheck(){
 
   let flagsOnBomb = 0;
+  let flagsPlaced = 0;
 
+  //maks sure flags ontop of bombs
   for ( let y = 0; y < rows; y++){
     for (let x = 0; x < cols; x ++){
-      if (grid[y][x].flagged && grid[y][x].bomb){
+      if (grid[y][x].flagged){
 
-        //adds number
-        flagsOnBomb++;
+        //fool proof
+        flagsPlaced++;
+
+        if (grid[y][x].bomb){
+
+          //adds number
+          flagsOnBomb++;
+        }
       }
     }
   }
-  if (flagsOnBomb ===  numberOfBombs){
+  if (flagsOnBomb ===  numberOfBombs && flagsPlaced === numberOfBombs){
     gameState = "win";
   }
 }
