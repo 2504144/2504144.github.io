@@ -70,17 +70,14 @@ function draw() {
   else if (gameState === "game"){
     game();
   }
-
   else if (gameState === "win" && playOnce === false){
     winner();
     playOnce = true;
   }
 
-  else if (gameState === "lose" || state === "bomb"){
-    ending();
+  else if(gameState === "lose"){
     playAgain();
   }
-
 }
 
 function preload(){
@@ -211,6 +208,8 @@ function game(){
   bombCounter(); 
 
   winCheck();
+
+  ending();
 }
 
 //field of play
@@ -260,6 +259,7 @@ function displayGrid() {
 
 }
 
+//2D array
 function generateEmptyGrid(cols, rows) {
   let newGrid = [];
   for (let y = 0; y < rows; y++) {
@@ -353,7 +353,6 @@ function mousePressed(){
     //if bomb clicked
     if (state === "shovel" && grid[cellY][cellX].bomb){
       state = "bomb"; 
-      gameState = "lose";
 
       //shows all bombs
       for (let y = 0; y < rows; y++){
@@ -372,7 +371,7 @@ function mousePressed(){
   }
 
   //restart
-  if ((gameState === "win" || gameState === "lose") && mouseX > width / 2 - buttonWidth / 2 && mouseX < width / 2 + buttonWidth / 2 && mouseY > height / 2 && mouseY < height / 1.5 + buttonHeight && gameState !== "game"){
+  if ((gameState === "win" || gameState === "lose") && mouseX > width / 2 - buttonWidth / 2 && mouseX < width / 2 + buttonWidth / 2 && mouseY > height / 2 && mouseY < height / 1.5 + buttonHeight){
     restart();
   }
 
@@ -460,13 +459,11 @@ function ending(){
   let crurrentFrame = explosion.getCurrentFrame();
 
   //plays explosion once
-  if (explosion.getCurrentFrame() < 20){
+  if (state === "bomb" && explosion.getCurrentFrame() < 20){
     image(explosion, 0, 0, CELL_SIZE * cols, CELL_SIZE * rows);
   }
 }
 
-
-//restart
 function restart(){
   noice.hide();
   grid = generateEmptyGrid(cols, rows);
@@ -475,7 +472,5 @@ function restart(){
   playOnce = false;
   gameState = "game";
   state = "shovel";
-  bombsPlaced(numberOfBombs, -1, -1);
-  amountOfNeighbors();
   game();
 }
