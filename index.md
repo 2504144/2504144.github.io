@@ -11,6 +11,8 @@
 - [Rectangle Grid](rectangle-grid)
 - [Game of Life Demo](game-of-life)
 - [Character Grid](character-grid)
+- [Walker OPP](walker)
+
 # CS30 Projects
 - [Interactive Scene](interactive-scene)
 - [Arrays and Object Notation](arrays-and-object-notation)
