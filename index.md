@@ -13,6 +13,7 @@
 - [Character Grid](character-grid)
 - [Walker OPP](walker)
 - [Fireworks OPP](fireworks)
+- [Connected Nodes OPP](nodes)
 
 # CS30 Projects
 - [Interactive Scene](interactive-scene)
