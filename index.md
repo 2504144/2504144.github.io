@@ -15,6 +15,7 @@
 - [Fireworks OPP](fireworks)
 - [Connected Nodes OPP](nodes)
 - [Translate/Rorate Demo](rotate)
+- [Local Stroage](local-storage)
 
 # CS30 Projects
 - [Interactive Scene](interactive-scene)
