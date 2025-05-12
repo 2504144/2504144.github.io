@@ -16,6 +16,7 @@
 - [Connected Nodes OPP](nodes)
 - [Translate/Rorate Demo](rotate)
 - [Local Stroage](local-storage)
+- [2D Colliade Demo](2d-collide)
 
 # CS30 Projects
 - [Interactive Scene](interactive-scene)
