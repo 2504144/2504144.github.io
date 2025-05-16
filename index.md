@@ -17,6 +17,7 @@
 - [Translate/Rorate Demo](rotate)
 - [Local Stroage](local-storage)
 - [2D Colliade Demo](2d-collide)
+- [OOP Inheritence] (inheritance)
 
 # CS30 Projects
 - [Interactive Scene](interactive-scene)
