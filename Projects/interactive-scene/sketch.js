@@ -33,7 +33,7 @@ let maxSpeed = 25;     //fastest it can go so it cant skip through a paddle
 //winning
 let winner = '';       //who won the last game
 let winTime = 0;       //when they won
-let winScreenTime = 3000;  //how long the winner shows before going home (milliseconds)
+let winScreenTime = 5000;  //how long the winner shows before going home by itself (milliseconds)
 
 function setup() {
   //Screen
@@ -88,31 +88,37 @@ function game(){
 function mainPage(){
   background('lime');
 
-  //Banner
+  //Banner (rounded with a shadow)
   fill('black');
-  rect(width/2 - buttonWidth/2 * 2, height/10, buttonWidth * 2, buttonHeight);
+  shadowOn(0, 0, 0, 0.45);
+  rect(width/2 - buttonWidth/2 * 2, height/10, buttonWidth * 2, buttonHeight, buttonHeight/2);
 
   //Play Button
-  rect(width/2 - buttonWidth/4, height/3, buttonWidth/2, buttonHeight);
+  rect(width/2 - buttonWidth/4, height/3, buttonWidth/2, buttonHeight, buttonHeight/2);
 
   //Controls Button
-  rect(width/2 - buttonWidth/(1.75*2), height/2, buttonWidth/1.75, buttonHeight);
+  rect(width/2 - buttonWidth/(1.75*2), height/2, buttonWidth/1.75, buttonHeight, buttonHeight/2);
+  shadowOff();
 
   //Banner Text
   fill('lime');
   textSize(50);
   textStyle('bold');
-  text("Khoi's Version of Pong (Out of 1)", width/2 - buttonWidth/2 * 1.5 + buttonWidth/4 - 192, height/10 + buttonHeight/2 + 17);
+  textAlign(CENTER, CENTER);
+  textSize(44);
+  text("Khoi's Version of Pong (Out of 1)", width/2, height/10 + buttonHeight/2);
+  textSize(50);
 
   // Play Text
   textSize(50);
   textStyle('bold');
-  text('Play', width/2 - buttonWidth/4 + buttonWidth/4 - 50, height/3+buttonHeight/2 + 17);
+  text('Play', width/2, height/3 + buttonHeight/2);
 
   //Control Text
   textSize(50);
   textStyle('bold');
-  text('Controls', width/2 - buttonWidth/4 + buttonWidth/4 - 100, height/2+buttonHeight/2 + 17);
+  text('Controls', width/2, height/2 + buttonHeight/2);
+  textAlign(LEFT, BASELINE);
 }
 
 //Controls Page
@@ -121,7 +127,9 @@ function controlPage(){
 
   //Banner
   fill('lime');
-  rect(width/2 - buttonWidth/2, height/10, buttonWidth, buttonHeight);
+  shadowOn(0, 255, 0, 0.35);
+  rect(width/2 - buttonWidth/2, height/10, buttonWidth, buttonHeight, buttonHeight/2);
+  shadowOff();
   
   //Text
   fill('black');
@@ -131,7 +139,9 @@ function controlPage(){
 
   //Text Box
   fill('lime');
-  rect(width/2 - (width - 600)/2, height/2 - height/4, width - 600, height/2.75);
+  shadowOn(0, 255, 0, 0.35);
+  rect(width/2 - (width - 600)/2, height/2 - height/4, width - 600, height/2.75, 30);
+  shadowOff();
 
   //Text
   fill('black');
@@ -141,7 +151,9 @@ function controlPage(){
   
   //Play Button on Control Screen
   fill('lime');
-  rect(width/2 - buttonWidth/4, height/1.5, buttonWidth/2, buttonHeight);
+  shadowOn(0, 255, 0, 0.35);
+  rect(width/2 - buttonWidth/4, height/1.5, buttonWidth/2, buttonHeight, buttonHeight/2);
+  shadowOff();
 
   // Play Text on Control Screen
   fill('black');
@@ -168,6 +180,18 @@ function mouseClicked(){
   else if (state === 'controls' && inside(width/2 - buttonWidth/4, height/1.5, buttonWidth/2, buttonHeight)){
     resetGame();
     state = 'game';
+  }
+
+  //Play Again on the end screen - straight into a new game
+  else if (state === 'lose' && inside(playAgainX(), endButtonY(), endButtonWidth(), buttonHeight)){
+    resetGame();
+    state = 'game';
+  }
+
+  //Home on the end screen
+  else if (state === 'lose' && inside(homeX(), endButtonY(), endButtonWidth(), buttonHeight)){
+    resetGame();
+    state = 'main';
   }
 }
 
@@ -198,21 +222,29 @@ function bounce() {
     dy *= -1;
   }
 
-  //First Player (right side) - always send it back left
-  if (x > firstX - radius && x < firstX && y > firstY && y < firstY + rectHeight) {
+  //First Player (right side) - any part of the ball touching any part of the paddle
+  //only while the ball is heading towards it, so it cant bounce twice
+  if (dx > 0 && touchingPaddle(firstX, firstY)) {
     dx = -abs(dx);
-
-    //move the ball out of the paddle so it doesnt get stuck inside
-    x = firstX - radius;
     speedUpBall();
   }
 
-  //Second Player (left side) - always send it back right
-  if (x < secondX + radius + rectWidth && x > secondX && y > secondY && y < secondY + rectHeight) {
+  //Second Player (left side)
+  if (dx < 0 && touchingPaddle(secondX, secondY)) {
     dx = abs(dx);
-    x = secondX + rectWidth + radius;
     speedUpBall();
   }
+}
+
+//true if the ball is touching the whole paddle box (front, top, bottom and corners)
+function touchingPaddle(paddleX, paddleY){
+
+  //the spot on the paddle closest to the middle of the ball
+  let closestX = constrain(x, paddleX, paddleX + rectWidth);
+  let closestY = constrain(y, paddleY, paddleY + rectHeight);
+
+  //touching if that spot is inside the ball
+  return dist(x, y, closestX, closestY) < radius;
 }
 
 //makes the ball a little faster after each hit
@@ -246,13 +278,17 @@ function displayBall() {
 
 //PLayer One
 function firstPlayer() {
-  rect(firstX, firstY, rectWidth, rectHeight);
+  shadowOn(0, 255, 0, 0.5);
+  rect(firstX, firstY, rectWidth, rectHeight, rectWidth/2);
+  shadowOff();
   wSKeys();
 }
 
 //Player Two
 function secondPlayer() {
-  rect(secondX,secondY, rectWidth, rectHeight);
+  shadowOn(0, 255, 0, 0.5);
+  rect(secondX, secondY, rectWidth, rectHeight, rectWidth/2);
+  shadowOff();
   upDownArrows();
 }
 
@@ -290,6 +326,20 @@ function upDownArrows() {
   firstY = constrain(firstY, 0, height - rectHeight);
 }
 
+//end screen buttons sit side by side under the message
+function endButtonWidth(){
+  return buttonWidth/1.6;
+}
+function endButtonY(){
+  return height/2 + buttonHeight * 2.4;
+}
+function playAgainX(){
+  return width/2 - endButtonWidth() - 15;
+}
+function homeX(){
+  return width/2 + 15;
+}
+
 //game over - remember who won and when
 function someoneWins(player){
   winner = player;
@@ -302,7 +352,9 @@ function loser(){
 
   //Text Box
   fill('black');
-  rect(width/2 - buttonWidth/1.7*1.5, height/2 - buttonHeight/2*2, buttonWidth * 1.7, buttonHeight * 3);
+  shadowOn(0, 0, 0, 0.45);
+  rect(width/2 - buttonWidth/1.7*1.5, height/2 - buttonHeight/2*2, buttonWidth * 1.7, buttonHeight * 3, 30);
+  shadowOff();
 
   //Text
   fill('lime');
@@ -310,14 +362,29 @@ function loser(){
   text('WELL, WELL, WELL', width/2 - buttonWidth/1.7 * 1.5 + 100, height/2 - buttonHeight/3 + 10, buttonWidth * 3, buttonHeight * 2);
   text('Look who we have here.', width/2 - buttonWidth/1.95 * 1.6 + 30, height/2 - buttonHeight/15 + 50, buttonWidth * 3, buttonHeight * 2);
 
-  //who won, and a count down back to the home screen
-  let secondsLeft = ceil((winScreenTime - (millis() - winTime)) / 1000);
+  //who won
   fill('black');
   textAlign(CENTER, CENTER);
   textSize(60);
   text(winner + ' wins!', width/2, height/2 - buttonHeight * 2.3);
-  textSize(28);
-  text('Back to the home screen in ' + max(secondsLeft, 1) + '...', width/2, height/2 + buttonHeight * 2.6);
+
+  //Play Again and Home buttons
+  shadowOn(0, 0, 0, 0.45);
+  fill('black');
+  rect(playAgainX(), endButtonY(), endButtonWidth(), buttonHeight, buttonHeight/2);
+  rect(homeX(), endButtonY(), endButtonWidth(), buttonHeight, buttonHeight/2);
+  shadowOff();
+
+  fill('lime');
+  textSize(36);
+  text('Play Again', playAgainX() + endButtonWidth()/2, endButtonY() + buttonHeight/2);
+  text('Home', homeX() + endButtonWidth()/2, endButtonY() + buttonHeight/2);
+
+  //count down back to the home screen if nobody presses a button
+  let secondsLeft = ceil((winScreenTime - (millis() - winTime)) / 1000);
+  fill('black');
+  textSize(24);
+  text('Back to the home screen in ' + max(secondsLeft, 1) + '...', width/2, endButtonY() + buttonHeight + 40);
   textAlign(LEFT, BASELINE);
   textSize(50);
 
@@ -334,4 +401,21 @@ function mouseWheel(){
     dx += 5;
     dy += 5;
   }
+}
+
+//turns on a soft shadow for whatever gets drawn next
+//(r, g, b) is the shadow colour, a is how see through it is (0 to 1)
+function shadowOn(r, g, b, a){
+  drawingContext.shadowColor = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
+  drawingContext.shadowBlur = 20;
+  drawingContext.shadowOffsetX = 6;
+  drawingContext.shadowOffsetY = 8;
+}
+
+//turns the shadow off so text doesnt get one
+function shadowOff(){
+  drawingContext.shadowColor = 'rgba(0, 0, 0, 0)';
+  drawingContext.shadowBlur = 0;
+  drawingContext.shadowOffsetX = 0;
+  drawingContext.shadowOffsetY = 0;
 }
