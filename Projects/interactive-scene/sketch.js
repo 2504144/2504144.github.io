@@ -30,9 +30,19 @@ let startSpeed;        //how fast the ball starts, to work out how much faster i
 let speedUp = 1.08;    //every paddle hit makes the ball 8% faster
 let maxSpeed = 25;     //fastest it can go so it cant skip through a paddle
 
+//winning
+let winner = '';       //who won the last game
+let winTime = 0;       //when they won
+let winScreenTime = 3000;  //how long the winner shows before going home (milliseconds)
+
 function setup() {
   //Screen
   createCanvas(windowWidth, windowHeight);
+  resetGame();
+}
+
+//puts the ball and paddles back in the middle for a new game
+function resetGame(){
   x = width/2;
   y = height/2;
 
@@ -41,11 +51,11 @@ function setup() {
   dy = random(-4, 4);
   startSpeed = abs(dx);
 
-  //First player
+  //First player (right side, arrow keys)
   firstX = width - width/15 - rectWidth;
   firstY = height/2 - rectHeight/2;
 
-  //Second Player
+  //Second Player (left side, W and S)
   secondX = width/15;
   secondY = height/2 - rectHeight/2;
 }
@@ -144,18 +154,26 @@ function controlPage(){
 function mouseClicked(){
 
   //PLay Button
-  if (mouseX > width/2 - buttonWidth/4 && mouseY > height/3 && state === 'main'){
+  if (state === 'main' && inside(width/2 - buttonWidth/4, height/3, buttonWidth/2, buttonHeight)){
+    resetGame();
     state = 'game';
   }
 
   //Control Button
-  if (mouseX > width/2 - buttonWidth/(1.75*2) && mouseY > height/2){
+  else if (state === 'main' && inside(width/2 - buttonWidth/(1.75*2), height/2, buttonWidth/1.75, buttonHeight)){
     state = 'controls';
   }
+
   //Play Button on Control Screen
-  if (mouseX > width/2 - buttonWidth/4 && mouseY > height/1.5 && state === 'controls'){
+  else if (state === 'controls' && inside(width/2 - buttonWidth/4, height/1.5, buttonWidth/2, buttonHeight)){
+    resetGame();
     state = 'game';
   }
+}
+
+//true if the mouse is inside a button
+function inside(left, top, w, h){
+  return mouseX > left && mouseX < left + w && mouseY > top && mouseY < top + h;
 }
 
 //Ball Movement
@@ -166,8 +184,14 @@ function moveBall() {
 
 //Bounce Mechanics
 function bounce() {
-  if (x > width - radius || x < 0 + radius) {
-    state = 'lose';
+  //ball got past the right paddle - Player 1 (W and S) wins
+  if (x > width - radius) {
+    someoneWins('Player 1');
+  }
+
+  //ball got past the left paddle - Player 2 (arrows) wins
+  else if (x < 0 + radius) {
+    someoneWins('Player 2');
   }
   
   if (y > height - radius || y < 0 + radius) {
@@ -266,6 +290,13 @@ function upDownArrows() {
   firstY = constrain(firstY, 0, height - rectHeight);
 }
 
+//game over - remember who won and when
+function someoneWins(player){
+  winner = player;
+  winTime = millis();
+  state = 'lose';
+}
+
 function loser(){
   background('lime');
 
@@ -278,6 +309,23 @@ function loser(){
   textStyle('bold');
   text('WELL, WELL, WELL', width/2 - buttonWidth/1.7 * 1.5 + 100, height/2 - buttonHeight/3 + 10, buttonWidth * 3, buttonHeight * 2);
   text('Look who we have here.', width/2 - buttonWidth/1.95 * 1.6 + 30, height/2 - buttonHeight/15 + 50, buttonWidth * 3, buttonHeight * 2);
+
+  //who won, and a count down back to the home screen
+  let secondsLeft = ceil((winScreenTime - (millis() - winTime)) / 1000);
+  fill('black');
+  textAlign(CENTER, CENTER);
+  textSize(60);
+  text(winner + ' wins!', width/2, height/2 - buttonHeight * 2.3);
+  textSize(28);
+  text('Back to the home screen in ' + max(secondsLeft, 1) + '...', width/2, height/2 + buttonHeight * 2.6);
+  textAlign(LEFT, BASELINE);
+  textSize(50);
+
+  //time is up - back home with a fresh game ready
+  if (millis() - winTime > winScreenTime){
+    resetGame();
+    state = 'main';
+  }
 }
 
 //Extra for Experts
