@@ -88,6 +88,9 @@ function preload(){
   //winner video - hidden, it gets drawn onto the canvas instead
   noice = createVideo("noice.mp4");
   noice.hide();
+
+  //when the video finishes, go back to the starting screen
+  noice.onended(backToMenu);
 }
 
 function setup() {
@@ -340,9 +343,9 @@ function explode(){
   lastExplosionFrame = current;
 }
 
-//win page - plays the video over the grid
+//win page - plays the video over the whole screen
 function winner(){
-  game();
+  background("black");
 
   //start the video only once
   if (!playOnce){
@@ -350,9 +353,38 @@ function winner(){
     noice.play();
     playOnce = true;
   }
-  image(noice, gridX, gridY, cellSize * cols, cellSize * rows);
 
-  playAgain("You found every bomb!");
+  //the video file has black bars on the top and bottom
+  //so only use the middle part (the actual picture), 480 x 270 out of 480 x 360
+  let picX = 0;
+  let picY = 45;
+  let picWidth = 480;
+  let picHeight = 270;
+
+  //make the picture as big as it can go while filling the whole screen
+  let scale = max(width / picWidth, height / picHeight);
+  let w = picWidth * scale;
+  let h = picHeight * scale;
+  image(noice, (width - w) / 2, (height - h) / 2, w, h, picX, picY, picWidth, picHeight);
+
+  //message along the top
+  noStroke();
+  fill(0, 0, 0, 160);
+  rect(0, 0, width, 70);
+  fill("white");
+  textStyle("bold");
+  textAlign(CENTER, CENTER);
+  textSize(36);
+  text("You found every bomb!", width / 2, 35);
+
+  //click anywhere to skip
+  clickables.push({ label: "skip", x: 0, y: 0, w: width, h: height, action: backToMenu });
+}
+
+//stops the video and goes back to the starting screen
+function backToMenu(){
+  stopVideo();
+  gameState = "main";
 }
 
 //play again and menu buttons on top of the game
@@ -373,10 +405,7 @@ function playAgain(message){
   text(message, width / 2, boxY + 45);
 
   button("Play Again", boxX + 30, boxY + 90, boxWidth - 60, buttonHeight, newGame, color(52, 124, 44));
-  button("Menu", boxX + 30, boxY + 90 + buttonHeight + 10, boxWidth - 60, buttonHeight * 0.7, function(){
-    stopVideo();
-    gameState = "main";
-  }, "black");
+  button("Menu", boxX + 30, boxY + 90 + buttonHeight + 10, boxWidth - 60, buttonHeight * 0.7, backToMenu, "black");
 }
 
 
