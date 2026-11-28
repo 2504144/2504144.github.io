@@ -4,6 +4,7 @@
 //
 // Extra for Experts: (It's at the bottom of all code)
 // - I have uncorperated mouse weheel into my project by using it to change the speed of the ball(it may take a bit to change speed but it changes very quick)
+// - the ball gets a little faster every time a paddle hits it, so rallies get harder the longer they go
 
 //button dimensions
 let buttonWidth = 400;
@@ -24,13 +25,21 @@ let secondY;
 let state = 'main';
 let movementSpeed = 7;
 
+//speed up
+let startSpeed;        //how fast the ball starts, to work out how much faster it is now
+let speedUp = 1.08;    //every paddle hit makes the ball 8% faster
+let maxSpeed = 25;     //fastest it can go so it cant skip through a paddle
+
 function setup() {
   //Screen
   createCanvas(windowWidth, windowHeight);
   x = width/2;
   y = height/2;
-  dx = random(0, 5);
-  dy = random(0, 5);
+
+  //starts at a playable speed, going left or right
+  dx = random([-1, 1]) * random(4, 6);
+  dy = random(-4, 4);
+  startSpeed = abs(dx);
 
   //First player
   firstX = width - width/15 - rectWidth;
@@ -63,6 +72,7 @@ function game(){
   firstPlayer();
   secondPlayer();
   bounce();
+  showSpeed();
 }
 //Main Page
 function mainPage(){
@@ -164,15 +174,43 @@ function bounce() {
     dy *= -1;
   }
 
-  //First Player
+  //First Player (right side) - always send it back left
   if (x > firstX - radius && x < firstX && y > firstY && y < firstY + rectHeight) {
-    dx *= -1;
+    dx = -abs(dx);
+
+    //move the ball out of the paddle so it doesnt get stuck inside
+    x = firstX - radius;
+    speedUpBall();
   }
 
-  //Second Player
+  //Second Player (left side) - always send it back right
   if (x < secondX + radius + rectWidth && x > secondX && y > secondY && y < secondY + rectHeight) {
-    dx *= -1;
+    dx = abs(dx);
+    x = secondX + rectWidth + radius;
+    speedUpBall();
   }
+}
+
+//makes the ball a little faster after each hit
+function speedUpBall(){
+  if (abs(dx) < maxSpeed){
+    dx *= speedUp;
+    dy *= speedUp;
+  }
+
+  //never faster than the max
+  dx = constrain(dx, -maxSpeed, maxSpeed);
+  dy = constrain(dy, -maxSpeed, maxSpeed);
+}
+
+//how fast the ball is going compared to the start
+function showSpeed(){
+  fill('lime');
+  textSize(24);
+  textStyle('bold');
+  textAlign(CENTER, TOP);
+  text('Speed x' + (abs(dx) / startSpeed).toFixed(1), width/2, 15);
+  textAlign(LEFT, BASELINE);
 }
 
 //Ball
@@ -198,28 +236,34 @@ function secondPlayer() {
 function wSKeys(){
 
   //W Key
-  if (keyIsDown(87) && firstY > 0) {
+  if (keyIsDown(87) && secondY > 0) {
     secondY -= movementSpeed;
   }
 
   //S Key
-  if (keyIsDown(83) && firstY < height - buttonHeight) {
+  if (keyIsDown(83) && secondY < height - rectHeight) {
     secondY += movementSpeed;
   }
+
+  //stay on the screen
+  secondY = constrain(secondY, 0, height - rectHeight);
 }
 
 //Up Down Arrows
 function upDownArrows() {
 
   //Up Arrow
-  if (keyIsDown(UP_ARROW) && secondY > 0) {
+  if (keyIsDown(UP_ARROW) && firstY > 0) {
     firstY -= movementSpeed;
   }
   
   //Down Arrow
-  if (keyIsDown(DOWN_ARROW) && secondY < height - buttonHeight) {
+  if (keyIsDown(DOWN_ARROW) && firstY < height - rectHeight) {
     firstY += movementSpeed;
   }
+
+  //stay on the screen
+  firstY = constrain(firstY, 0, height - rectHeight);
 }
 
 function loser(){
