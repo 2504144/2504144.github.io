@@ -130,7 +130,7 @@ function draw() {
   }
 }
 
-//window resizing
+//window resizing (also runs when going in and out of full screen)
 function windowResized(){
   resizeCanvas(windowWidth, windowHeight);
   layoutGrid();
@@ -384,6 +384,12 @@ function winner(){
 //stops the video and goes back to the starting screen
 function backToMenu(){
   stopVideo();
+
+  //leave full screen if the win video put us in it
+  if (fullscreen()){
+    fullscreen(false);
+  }
+
   gameState = "main";
 }
 
@@ -741,5 +747,9 @@ function winCheck(){
 
   if (allFlagged || allDug){
     gameState = "win";
+
+    //go full screen for the video (hides the browser bars too)
+    //this has to happen right when you click, browsers only allow it then
+    fullscreen(true);
   }
 }
